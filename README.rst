@@ -17,7 +17,9 @@ as input of another.
 
 installation
 ------------
+
 .. code-block:: console
+
     >> pip install pyungo
 
 simple example
@@ -66,5 +68,7 @@ pyungo will raise an error in the following situations:
 
 testing
 -------
+
 .. code-block:: console
+
     >> pytest
