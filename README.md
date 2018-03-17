@@ -2,7 +2,7 @@
 
 # pyungo
 
-pyungo is a lightweight library to link a set of Pyhton dependent functions together, and execute them in an ordered manner.
+pyungo is a lightweight library to link a set of dependent functions together, and execute them in an ordered manner.
 
 pyungo is built around `Graphs` and `Nodes` used in a [DAG](https://en.wikipedia.org/wiki/Directed_acyclic_graph) (Directed Acyclic Graph). A `Node` represent a function being run with a defined set of inputs and returning one or several outputs. A `Graph` is a collection of `Nodes` where data can flow in an logical manner, the output of one node serving as input of another.
 
