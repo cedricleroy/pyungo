@@ -17,7 +17,7 @@ as input of another.
 
 installation
 ------------
-
+::
     >> pip install pyungo
 
 simple example
@@ -66,5 +66,5 @@ pyungo will raise an error in the following situations:
 
 testing
 -------
-
+::
     >> pytest
