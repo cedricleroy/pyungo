@@ -107,3 +107,31 @@ def test_circular_dependency():
         graph.calculate(data={'a': 6, 'b': 4})
     
     assert "A cyclic dependency exists amongst" in str(err.value)
+
+
+def test_iterable_on_single_output():
+    graph = Graph()
+
+    @graph.register(inputs=['a', 'b'], outputs=['c'])
+    def f_my_function(a, b):
+        return range(a) + [b]
+
+    res = graph.calculate(data={'a': 2, 'b': 3})
+
+    assert res == [0, 1, 3]
+
+
+def test_multiple_outputs_with_iterable():
+    graph = Graph()
+
+    @graph.register(inputs=['a', 'b'], outputs=['c', 'd'])
+    def f_my_function(a, b):
+        return range(a) + [b], b * 10
+
+    res = graph.calculate(data={'a': 2, 'b': 3})
+
+    assert isinstance(res, tuple) is True
+    assert graph.data['c'] == [0, 1, 3]
+    assert graph.data['d'] == 30
+    assert res[0] == [0, 1, 3]
+    assert res[1] == 30
