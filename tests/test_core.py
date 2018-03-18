@@ -114,7 +114,7 @@ def test_iterable_on_single_output():
 
     @graph.register(inputs=['a', 'b'], outputs=['c'])
     def f_my_function(a, b):
-        return range(a) + [b]
+        return list(range(a)) + [b]
 
     res = graph.calculate(data={'a': 2, 'b': 3})
 
@@ -126,7 +126,7 @@ def test_multiple_outputs_with_iterable():
 
     @graph.register(inputs=['a', 'b'], outputs=['c', 'd'])
     def f_my_function(a, b):
-        return range(a) + [b], b * 10
+        return list(range(a)) + [b], b * 10
 
     res = graph.calculate(data={'a': 2, 'b': 3})
 
