@@ -65,6 +65,10 @@ class Graph:
         self._data = None
 
     @property
+    def data(self):
+        return self._data
+
+    @property
     def sim_inputs(self):
         inputs = []
         for node in self._nodes:
