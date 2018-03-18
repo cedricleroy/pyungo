@@ -1,3 +1,6 @@
+build/
+dist/
+pyungo.egg-info/
 venv*/
 *.pyc
 *.vscode/
