@@ -135,3 +135,20 @@ def test_multiple_outputs_with_iterable():
     assert graph.data['d'] == 30
     assert res[0] == [0, 1, 3]
     assert res[1] == 30
+
+
+def test_args_kwargs():
+    graph = Graph()
+
+    @graph.register(
+        inputs=['a', 'b'],
+        args=['c'],
+        kwargs=['d'],
+        outputs=['e']
+    )
+    def f_my_function(a, b, *args, **kwargs):
+        return a + b + args[0] + kwargs['d']
+
+    res = graph.calculate(data={'a': 2, 'b': 3, 'c': 4, 'd': 5})
+
+    assert res == 14

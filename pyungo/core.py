@@ -26,11 +26,13 @@ def topological_sort(data):
 
 class Node:
     ID = 0
-    def __init__(self, fct, input_names, output_names):
+    def __init__(self, fct, input_names, output_names, args=None, kwargs=None):
         Node.ID += 1
         self._id = str(Node.ID)
         self._fct = fct
         self._input_names = input_names
+        self._args = args if args else []
+        self._kwargs = kwargs if kwargs else []
         self._output_names = output_names
 
     def __repr__(self):
@@ -39,8 +41,8 @@ class Node:
             self._input_names, self._output_names
         )
 
-    def __call__(self, args):
-        return self._fct(*args)
+    def __call__(self, args, **kwargs):
+        return self._fct(*args, **kwargs)
 
     @property
     def id(self):
@@ -48,7 +50,14 @@ class Node:
 
     @property
     def input_names(self):
-        return self._input_names
+        input_names = self._input_names
+        input_names.extend(self._args)
+        input_names.extend(self._kwargs)
+        return input_names
+
+    @property
+    def kwargs(self):
+        return self._kwargs
 
     @property
     def output_names(self):
@@ -85,13 +94,17 @@ class Graph:
     def register(self, **kwargs):
         def decorator(f):
             input_names = kwargs.get('inputs')
+            args_names = kwargs.get('args')
+            kwargs_names = kwargs.get('kwargs')
             output_names = kwargs.get('outputs')
-            self._create_node(f, input_names, output_names)
+            self._create_node(
+                f, input_names, output_names, args_names, kwargs_names
+            )
             return f
         return decorator
 
-    def _create_node(self, fct, input_names, output_names):
-        node = Node(fct, input_names, output_names)
+    def _create_node(self, fct, input_names, output_names, args_names, kwargs_names):
+        node = Node(fct, input_names, output_names, args_names, kwargs_names)
         # assume that we cannot have two nodes with the same output names
         for n in self._nodes:
             for out_name in n.output_names:
@@ -139,11 +152,14 @@ class Graph:
         for items in sorted_dep:
             for item in items:
                 node = self._get_node(item)
-                args = node.input_names
+                args = [i_name for i_name in node.input_names if i_name not in node.kwargs]
                 data_to_pass = []
                 for arg in args:
                     data_to_pass.append(self._data[arg])
-                res = node(data_to_pass)
+                kwargs_to_pass = {}
+                for kwarg in node.kwargs:
+                    kwargs_to_pass[kwarg] = self._data[kwarg]
+                res = node(data_to_pass, **kwargs_to_pass)
                 try:
                     iter(res)
                 except TypeError:
