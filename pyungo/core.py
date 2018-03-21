@@ -91,17 +91,23 @@ class Graph:
             outputs.extend(node.output_names)
         return outputs
 
+    def _register(self, f, **kwargs):
+        input_names = kwargs.get('inputs')
+        args_names = kwargs.get('args')
+        kwargs_names = kwargs.get('kwargs')
+        output_names = kwargs.get('outputs')
+        self._create_node(
+            f, input_names, output_names, args_names, kwargs_names
+        )
+
     def register(self, **kwargs):
         def decorator(f):
-            input_names = kwargs.get('inputs')
-            args_names = kwargs.get('args')
-            kwargs_names = kwargs.get('kwargs')
-            output_names = kwargs.get('outputs')
-            self._create_node(
-                f, input_names, output_names, args_names, kwargs_names
-            )
+            self._register(f, **kwargs)
             return f
         return decorator
+
+    def add_node(self, function, **kwargs):
+        self._register(function, **kwargs)
 
     def _create_node(self, fct, input_names, output_names, args_names, kwargs_names):
         node = Node(fct, input_names, output_names, args_names, kwargs_names)
