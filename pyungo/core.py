@@ -91,6 +91,15 @@ class Graph:
             outputs.extend(node.output_names)
         return outputs
 
+    @property
+    def dag(self):
+        """ return the ordered nodes graph """
+        ordered_nodes = []
+        for node_ids in topological_sort(self._dependencies()):
+            nodes = [self._get_node(node_id) for node_id in node_ids]
+            ordered_nodes.append(nodes)
+        return ordered_nodes
+
     def _register(self, f, **kwargs):
         input_names = kwargs.get('inputs')
         args_names = kwargs.get('args')

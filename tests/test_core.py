@@ -173,3 +173,24 @@ def test_args_kwargs():
     res = graph.calculate(data={'a': 2, 'b': 3, 'c': 4, 'd': 5})
 
     assert res == 14
+
+
+def test_dag_pretty_print():
+    graph = Graph()
+
+    @graph.register(inputs=['a', 'b'], outputs=['c'])
+    def f_my_function(a, b):
+        return a + b
+
+    @graph.register(inputs=['d', 'a'], outputs=['e'])
+    def f_my_function3(d, a):
+        return d - a
+
+    @graph.register(inputs=['c'], outputs=['d'])
+    def f_my_function2(c):
+        return c / 10.
+
+    expected = ['f_my_function', 'f_my_function2', 'f_my_function3']
+    dag = graph.dag
+    for i, fct_name in enumerate(expected):
+        assert dag[i][0].fct_name == fct_name
