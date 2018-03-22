@@ -175,12 +175,9 @@ class Graph:
                 for kwarg in node.kwargs:
                     kwargs_to_pass[kwarg] = self._data[kwarg]
                 res = node(data_to_pass, **kwargs_to_pass)
-                try:
-                    iter(res)
-                except TypeError:
-                    res = [res]
-                for i, out in enumerate(node.output_names):
-                    self._data[out] = res[i]
-        if len(res) == 1:
-            return res[0]
+                if len(node.output_names) == 1:
+                    self._data[node.output_names[0]] = res
+                else:
+                    for i, out in enumerate(node.output_names):
+                        self._data[out] = res[i]
         return res
