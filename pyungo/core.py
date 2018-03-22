@@ -1,5 +1,11 @@
 from functools import reduce
 from copy import deepcopy
+import logging
+import numpy as np
+
+LOGGER = logging.getLogger(__name__)
+HANDLER = logging.StreamHandler()
+LOGGER.addHandler(HANDLER)
 
 
 class PyungoError(Exception):
@@ -14,11 +20,11 @@ def topological_sort(data):
     extra_items_in_deps = reduce(set.union, data.values()) - set(data.keys())
     data.update({item: set() for item in extra_items_in_deps})
     while True:
-        ordered = set(item for item,dep in data.items() if not dep)
+        ordered = set(item for item, dep in data.items() if not dep)
         if not ordered:
             break
         yield sorted(ordered)
-        data = {item: (dep - ordered) for item,dep in data.items()
+        data = {item: (dep - ordered) for item, dep in data.items()
                 if item not in ordered}
     if data:
         raise PyungoError('A cyclic dependency exists amongst {}'.format(data))
@@ -26,6 +32,7 @@ def topological_sort(data):
 
 class Node:
     ID = 0
+
     def __init__(self, fct, input_names, output_names, args=None, kwargs=None):
         Node.ID += 1
         self._id = str(Node.ID)
@@ -157,7 +164,7 @@ class Graph:
         diff = data_inputs - inputs_to_provide
         if diff:
             msg = 'The following inputs are not used by the model: {}'.format(list(diff))
-            raise PyungoError(msg)
+            LOGGER.warning(msg)
 
     def calculate(self, data):
         self._data = deepcopy(data)
@@ -177,10 +184,20 @@ class Graph:
                 res = node(data_to_pass, **kwargs_to_pass)
                 try:
                     iter(res)
+                    # Remove single dimensional entries from the shape of array
+                    res = np.squeeze(res)
                 except TypeError:
-                    res = [res]
-                for i, out in enumerate(node.output_names):
-                    self._data[out] = res[i]
-        if len(res) == 1:
-            return res[0]
+                    # Not iterable: keep it as it is
+                    pass
+                # Save the returned values according to # of expected outputs
+                if len(node.output_names) > 1:
+                    for i, name in enumerate(node.output_names):
+                        self._data[name] = np.squeeze(res[i])
+                else:
+                    self._data[node.output_names[0]] = np.squeeze(res)
+        try:
+            if len(res) == 1:
+                return res[0]
+        except TypeError:
+            pass
         return res
