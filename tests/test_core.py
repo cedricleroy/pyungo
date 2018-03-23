@@ -20,6 +20,7 @@ def test_simple():
     res = graph.calculate(data={'a': 2, 'b': 3})
 
     assert res == -1.5
+    assert graph.data['e'] == -1.5
 
 
 def test_simple_without_decorator():
@@ -41,6 +42,7 @@ def test_simple_without_decorator():
     res = graph.calculate(data={'a': 2, 'b': 3})
 
     assert res == -1.5
+    assert graph.data['e'] == -1.5
 
 
 def test_multiple_outputs():
@@ -57,6 +59,7 @@ def test_multiple_outputs():
     res = graph.calculate(data={'a': 2, 'b': 3})
 
     assert res == 11
+    assert graph.data['e'] == 11
 
 
 def test_same_output_names():
@@ -140,6 +143,7 @@ def test_iterable_on_single_output():
     res = graph.calculate(data={'a': 2, 'b': 3})
 
     assert res == [0, 1, 3]
+    assert graph.data['c'] == [0, 1, 3]
 
 
 def test_multiple_outputs_with_iterable():
@@ -173,6 +177,7 @@ def test_args_kwargs():
     res = graph.calculate(data={'a': 2, 'b': 3, 'c': 4, 'd': 5})
 
     assert res == 14
+    assert graph.data['e'] == 14
 
 
 def test_dag_pretty_print():
