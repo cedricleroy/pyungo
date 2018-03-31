@@ -5,3 +5,4 @@ venv*/
 *.pyc
 *.vscode/
 *.pytest_cache/
+.DS_Store
