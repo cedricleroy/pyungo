@@ -116,9 +116,13 @@ class Graph:
 
     def _register(self, f, **kwargs):
         input_names = kwargs.get('inputs')
+        if not input_names:
+            raise PyungoError('Missing inputs parameter')
+        output_names = kwargs.get('outputs')
+        if not output_names:
+            raise PyungoError('Missing outputs parameters')
         args_names = kwargs.get('args')
         kwargs_names = kwargs.get('kwargs')
-        output_names = kwargs.get('outputs')
         self._create_node(
             f, input_names, output_names, args_names, kwargs_names
         )

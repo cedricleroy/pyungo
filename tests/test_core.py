@@ -154,7 +154,7 @@ def test_circular_dependency():
 
     with pytest.raises(PyungoError) as err:
         graph.calculate(data={'a': 6, 'b': 4})
-    
+
     assert "A cyclic dependency exists amongst" in str(err.value)
 
 
@@ -224,3 +224,19 @@ def test_dag_pretty_print():
     dag = graph.dag
     for i, fct_name in enumerate(expected):
         assert dag[i][0].fct_name == fct_name
+
+
+def test_missing_inputs():
+
+    graph = Graph(parallel=True)
+
+    def f_my_function(a, b):
+        return a + b
+
+    with pytest.raises(PyungoError) as err:
+        graph.add_node(f_my_function, outputs=['c'])
+    assert "Missing inputs parameter" in str(err.value)
+
+    with pytest.raises(PyungoError) as err:
+        graph.add_node(f_my_function, inputs=['a', 'b'])
+    assert "Missing outputs parameter" in str(err.value)
