@@ -1,6 +1,13 @@
-from functools import reduce
 from copy import deepcopy
+import datetime as dt
+from functools import reduce
+import logging
 from multiprocessing.dummy import Pool as ThreadPool
+
+
+logging.basicConfig()
+LOGGER = logging.getLogger()
+LOGGER.setLevel(logging.INFO)
 
 
 class PyungoError(Exception):
@@ -43,7 +50,11 @@ class Node:
         )
 
     def __call__(self, args, **kwargs):
-        return self._fct(*args, **kwargs)
+        t1 = dt.datetime.utcnow()
+        res = self._fct(*args, **kwargs)
+        t2 = dt.datetime.utcnow()
+        LOGGER.info('Ran {} in {}'.format(self, t2-t1))
+        return res
 
     @property
     def id(self):
@@ -178,6 +189,8 @@ class Graph:
             raise PyungoError(msg)
 
     def calculate(self, data):
+        t1 = dt.datetime.utcnow()
+        LOGGER.info('Starting calculation...')
         self._data = deepcopy(data)
         self._check_inputs(data)
         dep = self._dependencies()
@@ -219,4 +232,6 @@ class Graph:
                 else:
                     for i, out in enumerate(node.output_names):
                         self._data[out] = res[i]
+        t2 = dt.datetime.utcnow()
+        LOGGER.info('Calculation finished in {}'.format(t2-t1))
         return res
