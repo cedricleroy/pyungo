@@ -45,6 +45,31 @@ def test_simple_without_decorator():
     assert graph.data['e'] == -1.5
 
 
+def test_simple_parralel():
+    """ TODO: We could mock and make sure things are called correctly """
+
+    graph = Graph(parallel=True)
+
+    def f_my_function(a, b):
+        return a + b
+
+    def f_my_function3(d, a):
+        return d - a
+
+    def f_my_function2(c):
+        return c / 10.
+
+    graph.add_node(f_my_function, inputs=['a', 'b'], outputs=['c'])
+    graph.add_node(f_my_function3, inputs=['d', 'a'], outputs=['e'])
+    graph.add_node(f_my_function2, inputs=['c'], outputs=['d'])
+    graph.add_node(f_my_function2, inputs=['c'], outputs=['f'])
+    graph.add_node(f_my_function2, inputs=['c'], outputs=['g'])
+
+    res = graph.calculate(data={'a': 2, 'b': 3})
+
+    assert res == -1.5
+
+
 def test_multiple_outputs():
     graph = Graph()
 
@@ -129,7 +154,7 @@ def test_circular_dependency():
 
     with pytest.raises(PyungoError) as err:
         graph.calculate(data={'a': 6, 'b': 4})
-    
+
     assert "A cyclic dependency exists amongst" in str(err.value)
 
 
@@ -199,3 +224,19 @@ def test_dag_pretty_print():
     dag = graph.dag
     for i, fct_name in enumerate(expected):
         assert dag[i][0].fct_name == fct_name
+
+
+def test_missing_inputs():
+
+    graph = Graph(parallel=True)
+
+    def f_my_function(a, b):
+        return a + b
+
+    with pytest.raises(PyungoError) as err:
+        graph.add_node(f_my_function, outputs=['c'])
+    assert "Missing inputs parameter" in str(err.value)
+
+    with pytest.raises(PyungoError) as err:
+        graph.add_node(f_my_function, inputs=['a', 'b'])
+    assert "Missing outputs parameter" in str(err.value)

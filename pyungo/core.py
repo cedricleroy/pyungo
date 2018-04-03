@@ -1,5 +1,13 @@
-from functools import reduce
 from copy import deepcopy
+import datetime as dt
+from functools import reduce
+import logging
+from multiprocessing.dummy import Pool as ThreadPool
+
+
+logging.basicConfig()
+LOGGER = logging.getLogger()
+LOGGER.setLevel(logging.INFO)
 
 
 class PyungoError(Exception):
@@ -42,7 +50,11 @@ class Node:
         )
 
     def __call__(self, args, **kwargs):
-        return self._fct(*args, **kwargs)
+        t1 = dt.datetime.utcnow()
+        res = self._fct(*args, **kwargs)
+        t2 = dt.datetime.utcnow()
+        LOGGER.info('Ran {} in {}'.format(self, t2-t1))
+        return res
 
     @property
     def id(self):
@@ -67,11 +79,20 @@ class Node:
     def fct_name(self):
         return self._fct.__name__
 
+    def load_inputs(self, data_to_pass, kwargs_to_pass):
+        self._data_to_pass = data_to_pass
+        self._kwargs_to_pass = kwargs_to_pass 
+
+    def run_with_loaded_inputs(self):
+        return self(self._data_to_pass, **self._kwargs_to_pass)
+
 
 class Graph:
-    def __init__(self):
+    def __init__(self, parallel=False, pool_size=2):
         self._nodes = []
         self._data = None
+        self._parallel = parallel
+        self._pool_size = pool_size
 
     @property
     def data(self):
@@ -100,11 +121,19 @@ class Graph:
             ordered_nodes.append(nodes)
         return ordered_nodes
 
+    @staticmethod
+    def run_node(node):
+        return (node.id, node.run_with_loaded_inputs())
+
     def _register(self, f, **kwargs):
         input_names = kwargs.get('inputs')
+        if not input_names:
+            raise PyungoError('Missing inputs parameter')
+        output_names = kwargs.get('outputs')
+        if not output_names:
+            raise PyungoError('Missing outputs parameters')
         args_names = kwargs.get('args')
         kwargs_names = kwargs.get('kwargs')
-        output_names = kwargs.get('outputs')
         self._create_node(
             f, input_names, output_names, args_names, kwargs_names
         )
@@ -160,11 +189,14 @@ class Graph:
             raise PyungoError(msg)
 
     def calculate(self, data):
+        t1 = dt.datetime.utcnow()
+        LOGGER.info('Starting calculation...')
         self._data = deepcopy(data)
         self._check_inputs(data)
         dep = self._dependencies()
         sorted_dep = topological_sort(dep)
         for items in sorted_dep:
+            # loading node with inputs
             for item in items:
                 node = self._get_node(item)
                 args = [i_name for i_name in node.input_names if i_name not in node.kwargs]
@@ -174,10 +206,32 @@ class Graph:
                 kwargs_to_pass = {}
                 for kwarg in node.kwargs:
                     kwargs_to_pass[kwarg] = self._data[kwarg]
-                res = node(data_to_pass, **kwargs_to_pass)
+                node.load_inputs(data_to_pass, kwargs_to_pass)
+            # running nodes
+            if self._parallel:
+                pool = ThreadPool(self._pool_size)
+                results = pool.map(
+                    Graph.run_node,
+                    [self._get_node(i) for i in items]
+                )
+                pool.close()
+                pool.join()
+                results = {k: v for k, v in results}
+            else:
+                results = {}
+                for item in items:
+                    node = self._get_node(item)
+                    res = node.run_with_loaded_inputs()
+                    results[node.id] = res
+            # save results
+            for item in items:
+                node = self._get_node(item)
+                res = results[node.id]
                 if len(node.output_names) == 1:
                     self._data[node.output_names[0]] = res
                 else:
                     for i, out in enumerate(node.output_names):
                         self._data[out] = res[i]
+        t2 = dt.datetime.utcnow()
+        LOGGER.info('Calculation finished in {}'.format(t2-t1))
         return res
