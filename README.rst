@@ -62,12 +62,13 @@ parallelism
 When resolving the dag, pyungo figure out nodes that can be run
 in parallel. When creating a graph, we can specify the option
 `parallel=True` for running calculations concurently when possible,
-using `Python multiprocessing module <https://docs.python.org/3.6/library/multiprocessing.html>`_.
-We can specify the pool size when instantiating the Graph. This will
-set the maximum number of processes that will be launched. If 3 nodes
-can run in parallel and just 2 processes are used, pyungo will run
-calculation on the first 2 nodes first and will run the last one as soon
-as a process will be free.
+using `multiprocess module <https://pypi.org/project/multiprocess/>`_.
+This package is not automatically installed with pyungo, and will need
+to be installed manually if parallelism is used.  We can specify the
+pool size when instantiating the Graph. This will set the maximum number
+of processes that will be launched. If 3 nodes can run in parallel and 
+just 2 processes are used, pyungo will run calculation on the first 2 nodes
+first and will run the last one as soon as a process will be free.
 
 Instantiating a `Graph` with a pool of 5 processes for running calculations
 in parralel:
