@@ -2,12 +2,18 @@ from copy import deepcopy
 import datetime as dt
 from functools import reduce
 import logging
-from multiprocessing.dummy import Pool as ThreadPool
 
 
 logging.basicConfig()
 LOGGER = logging.getLogger()
 LOGGER.setLevel(logging.INFO)
+
+
+try:
+    from multiprocess import Pool
+except ImportError:
+    msg = 'multiprocess is not installed and needed for parralelism'
+    LOGGER.warning(msg)
 
 
 class PyungoError(Exception):
@@ -93,6 +99,12 @@ class Graph:
         self._data = None
         self._parallel = parallel
         self._pool_size = pool_size
+        if parallel:
+            try:
+                import multiprocess
+            except ImportError:
+                msg = 'multiprocess package is needed for parralelism'
+                raise ImportError(msg)
 
     @property
     def data(self):
@@ -209,7 +221,7 @@ class Graph:
                 node.load_inputs(data_to_pass, kwargs_to_pass)
             # running nodes
             if self._parallel:
-                pool = ThreadPool(self._pool_size)
+                pool = Pool(self._pool_size)
                 results = pool.map(
                     Graph.run_node,
                     [self._get_node(i) for i in items]
