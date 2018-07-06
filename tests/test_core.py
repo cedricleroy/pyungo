@@ -240,3 +240,51 @@ def test_missing_inputs():
     with pytest.raises(PyungoError) as err:
         graph.add_node(f_my_function, inputs=['a', 'b'])
     assert "Missing outputs parameter" in str(err.value)
+
+
+def test_passing_data_to_node_definition():
+
+    graph = Graph()
+
+    @graph.register(inputs=['a', {'b': 2}], outputs=['c'])
+    def f_my_function(a, b):
+        return a + b
+
+    res = graph.calculate(data={'a': 5})
+    assert res == 7
+
+
+def test_wrong_input_type():
+
+    graph = Graph()
+
+    with pytest.raises(PyungoError) as err:
+        @graph.register(inputs=['a', {'b'}], outputs=['c'])
+        def f_my_function(a, b):
+            return a + b
+
+    assert "inputs need to be of type str or dict" in str(err.value)
+
+
+def test_empty_input_dict():
+
+    graph = Graph()
+
+    with pytest.raises(PyungoError) as err:
+        @graph.register(inputs=['a', {}], outputs=['c'])
+        def f_my_function(a, b):
+            return a + b
+
+    assert "dict inputs should have only one key and cannot be empty" in str(err.value)
+
+
+def test_multiple_keys_input_dict():
+
+    graph = Graph()
+
+    with pytest.raises(PyungoError) as err:
+        @graph.register(inputs=['a', {'b': 1, 'c': 2}], outputs=['c'])
+        def f_my_function(a, b):
+            return a + b
+
+    assert "dict inputs should have only one key and cannot be empty" in str(err.value)

@@ -40,11 +40,12 @@ def topological_sort(data):
 
 class Node:
     ID = 0
-    def __init__(self, fct, input_names, output_names, args=None, kwargs=None):
+    def __init__(self, fct, inputs, output_names, args=None, kwargs=None):
         Node.ID += 1
         self._id = str(Node.ID)
         self._fct = fct
-        self._input_names = input_names
+        self._data_provided = {}
+        self._process_inputs(inputs)
         self._args = args if args else []
         self._kwargs = kwargs if kwargs else []
         self._output_names = output_names
@@ -85,9 +86,24 @@ class Node:
     def fct_name(self):
         return self._fct.__name__
 
+    def _process_inputs(self, inputs):
+        self._input_names = []
+        for input_ in inputs:
+            if isinstance(input_, str):
+                self._input_names.append(input_)
+            elif isinstance(input_, dict):
+                if len(input_) != 1:
+                    msg = 'dict inputs should have only one key and cannot be empty'
+                    raise PyungoError(msg)
+                self._data_provided.update(input_)
+            else:
+                msg = 'inputs need to be of type str or dict'
+                raise PyungoError(msg)
+
     def load_inputs(self, data_to_pass, kwargs_to_pass):
         self._data_to_pass = data_to_pass
         self._kwargs_to_pass = kwargs_to_pass 
+        self._kwargs_to_pass.update(self._data_provided)
 
     def run_with_loaded_inputs(self):
         return self(self._data_to_pass, **self._kwargs_to_pass)
