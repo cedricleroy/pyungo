@@ -1,5 +1,6 @@
 import pytest
 from pyungo.core import Graph, PyungoError
+from pyungo.io import Input, Output
 
 
 def test_simple():
@@ -240,3 +241,75 @@ def test_missing_inputs():
     with pytest.raises(PyungoError) as err:
         graph.add_node(f_my_function, inputs=['a', 'b'])
     assert "Missing outputs parameter" in str(err.value)
+
+
+def test_passing_data_to_node_definition():
+
+    graph = Graph()
+
+    @graph.register(inputs=['a', {'b': 2}], outputs=['c'])
+    def f_my_function(a, b):
+        return a + b
+
+    res = graph.calculate(data={'a': 5})
+    assert res == 7
+
+
+def test_wrong_input_type():
+
+    graph = Graph()
+
+    with pytest.raises(PyungoError) as err:
+        @graph.register(inputs=['a', {'b'}], outputs=['c'])
+        def f_my_function(a, b):
+            return a + b
+
+    assert "inputs need to be of type str, dict or pyungo.io.Input" in str(err.value)
+
+
+def test_empty_input_dict():
+
+    graph = Graph()
+
+    with pytest.raises(PyungoError) as err:
+        @graph.register(inputs=['a', {}], outputs=['c'])
+        def f_my_function(a, b):
+            return a + b
+
+    assert "dict inputs should have only one key and cannot be empty" in str(err.value)
+
+
+def test_multiple_keys_input_dict():
+
+    graph = Graph()
+
+    with pytest.raises(PyungoError) as err:
+        @graph.register(inputs=['a', {'b': 1, 'c': 2}], outputs=['c'])
+        def f_my_function(a, b):
+            return a + b
+
+    assert "dict inputs should have only one key and cannot be empty" in str(err.value)
+
+
+def test_input_output():
+    graph = Graph()
+
+    @graph.register(
+        inputs=[Input('a'), Input('b')],
+        outputs=[Output('c')]
+    )
+    def f_my_function(a, b):
+        return a + b
+
+    @graph.register(inputs=['d', Input('a')], outputs=['e'])
+    def f_my_function3(d, a):
+        return d - a
+
+    @graph.register(inputs=['c'], outputs=[Output('d')])
+    def f_my_function2(c):
+        return c / 10.
+
+    res = graph.calculate(data={'a': 2, 'b': 3})
+
+    assert res == -1.5
+    assert graph.data['e'] == -1.5
