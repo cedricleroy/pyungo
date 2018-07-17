@@ -16,6 +16,9 @@ except ImportError:
     LOGGER.warning(msg)
 
 
+from pyungo.io import Input, Output
+
+
 class PyungoError(Exception):
     pass
 
@@ -40,7 +43,7 @@ def topological_sort(data):
 
 class Node:
     ID = 0
-    def __init__(self, fct, inputs, output_names, args=None, kwargs=None):
+    def __init__(self, fct, inputs, outputs, args=None, kwargs=None):
         Node.ID += 1
         self._id = str(Node.ID)
         self._fct = fct
@@ -48,12 +51,12 @@ class Node:
         self._process_inputs(inputs)
         self._args = args if args else []
         self._kwargs = kwargs if kwargs else []
-        self._output_names = output_names
+        self._process_outputs(outputs)
 
     def __repr__(self):
         return 'Node({}, <{}>, {}, {})'.format(
             self._id, self._fct.__name__,
-            self._input_names, self._output_names
+            self.input_names, self.output_names
         )
 
     def __call__(self, args, **kwargs):
@@ -69,7 +72,7 @@ class Node:
 
     @property
     def input_names(self):
-        input_names = self._input_names
+        input_names = [i.name for i in self._inputs]
         input_names.extend(self._args)
         input_names.extend(self._kwargs)
         return input_names
@@ -80,24 +83,37 @@ class Node:
 
     @property
     def output_names(self):
-        return self._output_names
+        return [o.name for o in self._outputs]
 
     @property
     def fct_name(self):
         return self._fct.__name__
 
     def _process_inputs(self, inputs):
-        self._input_names = []
+        self._inputs = []
         for input_ in inputs:
             if isinstance(input_, str):
-                self._input_names.append(input_)
+                self._inputs.append(Input(input_))
             elif isinstance(input_, dict):
                 if len(input_) != 1:
                     msg = 'dict inputs should have only one key and cannot be empty'
                     raise PyungoError(msg)
                 self._data_provided.update(input_)
+            elif isinstance(input_, Input):
+                self._inputs.append(input_)
             else:
-                msg = 'inputs need to be of type str or dict'
+                msg = 'inputs need to be of type str, dict or pyungo.io.Input'
+                raise PyungoError(msg)
+
+    def _process_outputs(self, outputs):
+        self._outputs = []
+        for output in outputs:
+            if isinstance(output, str):
+                self._outputs.append(Output(output))
+            elif isinstance(output, Output):
+                self._outputs.append(output)
+            else:
+                msg = 'outputs need to be of type str or pyungo.io.Output'
                 raise PyungoError(msg)
 
     def load_inputs(self, data_to_pass, kwargs_to_pass):
