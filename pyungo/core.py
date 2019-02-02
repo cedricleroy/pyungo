@@ -3,6 +3,8 @@ import datetime as dt
 from functools import reduce
 import logging
 
+from pyungo.io import Input
+
 
 logging.basicConfig()
 LOGGER = logging.getLogger()
@@ -28,35 +30,39 @@ def topological_sort(data):
     extra_items_in_deps = reduce(set.union, data.values()) - set(data.keys())
     data.update({item: set() for item in extra_items_in_deps})
     while True:
-        ordered = set(item for item,dep in data.items() if not dep)
+        ordered = set(item for item, dep in data.items() if not dep)
         if not ordered:
             break
         yield sorted(ordered)
-        data = {item: (dep - ordered) for item,dep in data.items()
+        data = {item: (dep - ordered) for item, dep in data.items()
                 if item not in ordered}
     if data:
         raise PyungoError('A cyclic dependency exists amongst {}'.format(data))
 
 
 class Node:
+
     ID = 0
+
     def __init__(self, fct, inputs, output_names, args=None, kwargs=None):
         Node.ID += 1
         self._id = str(Node.ID)
         self._fct = fct
-        self._data_provided = {}
+        self._inputs = []
         self._process_inputs(inputs)
         self._args = args if args else []
+        self._process_inputs(self._args, is_arg=True)
         self._kwargs = kwargs if kwargs else []
+        self._process_inputs(self._kwargs, is_kwarg=True)
         self._output_names = output_names
 
     def __repr__(self):
         return 'Node({}, <{}>, {}, {})'.format(
             self._id, self._fct.__name__,
-            self._input_names, self._output_names
+            self.input_names, self._output_names
         )
 
-    def __call__(self, args, **kwargs):
+    def __call__(self, *args, **kwargs):
         t1 = dt.datetime.utcnow()
         res = self._fct(*args, **kwargs)
         t2 = dt.datetime.utcnow()
@@ -69,9 +75,12 @@ class Node:
 
     @property
     def input_names(self):
-        input_names = self._input_names
-        input_names.extend(self._args)
-        input_names.extend(self._kwargs)
+        input_names = [i.name for i in self._inputs]
+        return input_names
+
+    @property
+    def input_names_without_values(self):
+        input_names = [i.name for i in self._inputs if i.value is None]
         return input_names
 
     @property
@@ -86,27 +95,42 @@ class Node:
     def fct_name(self):
         return self._fct.__name__
 
-    def _process_inputs(self, inputs):
-        self._input_names = []
+    def _process_inputs(self, inputs, is_arg=False, is_kwarg=False):
         for input_ in inputs:
-            if isinstance(input_, str):
-                self._input_names.append(input_)
+            if isinstance(input_, Input):
+                new_input = input_
+            elif isinstance(input_, str):
+                if is_arg:
+                    new_input = Input.arg(input_)
+                elif is_kwarg:
+                    new_input = Input.kwarg(input_)
+                else:
+                    new_input = Input(input_)
             elif isinstance(input_, dict):
                 if len(input_) != 1:
                     msg = 'dict inputs should have only one key and cannot be empty'
                     raise PyungoError(msg)
-                self._data_provided.update(input_)
+                key = next(iter(input_))
+                value = input_[key]
+                new_input = Input.constant(key, value)
             else:
                 msg = 'inputs need to be of type str or dict'
                 raise PyungoError(msg)
+            self._inputs.append(new_input)
 
-    def load_inputs(self, data_to_pass, kwargs_to_pass):
-        self._data_to_pass = data_to_pass
-        self._kwargs_to_pass = kwargs_to_pass 
-        self._kwargs_to_pass.update(self._data_provided)
+    def set_value_to_input(self, input_name, value):
+        for input_ in self._inputs:
+            if input_.name == input_name:
+                input_.value = value
+                return
+        msg = 'input "{}" does not exist in this node'.format(input_name)
+        raise PyungoError(msg)
 
     def run_with_loaded_inputs(self):
-        return self(self._data_to_pass, **self._kwargs_to_pass)
+        args = [i.value for i in self._inputs if not i.is_arg and not i.is_kwarg]
+        args.extend([i.value for i in self._inputs if i.is_arg])
+        kwargs = {i.name: i.value for i in self._inputs if i.is_kwarg}
+        return self(*args, **kwargs)
 
 
 class Graph:
@@ -130,7 +154,7 @@ class Graph:
     def sim_inputs(self):
         inputs = []
         for node in self._nodes:
-            inputs.extend(node.input_names)
+            inputs.extend(node.input_names_without_values)
         return inputs
 
     @property
@@ -227,14 +251,9 @@ class Graph:
             # loading node with inputs
             for item in items:
                 node = self._get_node(item)
-                args = [i_name for i_name in node.input_names if i_name not in node.kwargs]
-                data_to_pass = []
+                args = [i_name for i_name in node.input_names_without_values]
                 for arg in args:
-                    data_to_pass.append(self._data[arg])
-                kwargs_to_pass = {}
-                for kwarg in node.kwargs:
-                    kwargs_to_pass[kwarg] = self._data[kwarg]
-                node.load_inputs(data_to_pass, kwargs_to_pass)
+                    node.set_value_to_input(arg, self._data[arg])
             # running nodes
             if self._parallel:
                 pool = Pool(self._pool_size)
