@@ -1,5 +1,7 @@
 import pytest
+
 from pyungo.core import Graph, PyungoError
+from pyungo.io import Input
 
 
 def test_simple():
@@ -288,3 +290,18 @@ def test_multiple_keys_input_dict():
             return a + b
 
     assert "dict inputs should have only one key and cannot be empty" in str(err.value)
+
+
+def test_Input_type_input():
+    graph = Graph()
+
+    @graph.register(
+        inputs=[Input(name='a'), 'b'],
+        outputs=['c']
+    )
+    def f_my_function(a, b):
+        return a + b
+
+    res = graph.calculate(data={'a': 2, 'b': 3})
+
+    assert res == 5
