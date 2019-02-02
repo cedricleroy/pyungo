@@ -31,3 +31,4 @@ def test_Input_constant():
     assert inp.value == 2
     assert inp.is_arg is False
     assert inp.is_kwarg is False
+    assert inp.is_constant is True

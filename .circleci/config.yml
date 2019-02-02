@@ -18,6 +18,7 @@ jobs:
           name: install dependencies
           command: |
             pip install multiprocess --user
+            pip install pycontracts --user
       - run:
           name: run tests
           command: |

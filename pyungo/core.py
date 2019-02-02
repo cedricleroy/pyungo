@@ -79,8 +79,8 @@ class Node:
         return input_names
 
     @property
-    def input_names_without_values(self):
-        input_names = [i.name for i in self._inputs if i.value is None]
+    def input_names_without_constants(self):
+        input_names = [i.name for i in self._inputs if not i.is_constant]
         return input_names
 
     @property
@@ -122,6 +122,8 @@ class Node:
         for input_ in self._inputs:
             if input_.name == input_name:
                 input_.value = value
+                if input_.contract:
+                    input_.check_contract()
                 return
         msg = 'input "{}" does not exist in this node'.format(input_name)
         raise PyungoError(msg)
@@ -154,7 +156,7 @@ class Graph:
     def sim_inputs(self):
         inputs = []
         for node in self._nodes:
-            inputs.extend(node.input_names_without_values)
+            inputs.extend(node.input_names_without_constants)
         return inputs
 
     @property
@@ -251,7 +253,7 @@ class Graph:
             # loading node with inputs
             for item in items:
                 node = self._get_node(item)
-                args = [i_name for i_name in node.input_names_without_values]
+                args = [i_name for i_name in node.input_names_without_constants]
                 for arg in args:
                     node.set_value_to_input(arg, self._data[arg])
             # running nodes

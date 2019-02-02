@@ -20,7 +20,11 @@ def test_simple():
         return c / 10.
 
     res = graph.calculate(data={'a': 2, 'b': 3})
+    assert res == -1.5
+    assert graph.data['e'] == -1.5
 
+    # make sure it is indepodent
+    res = graph.calculate(data={'a': 2, 'b': 3})
     assert res == -1.5
     assert graph.data['e'] == -1.5
 
@@ -305,3 +309,27 @@ def test_Input_type_input():
     res = graph.calculate(data={'a': 2, 'b': 3})
 
     assert res == 5
+
+
+def test_contract():
+
+    from contracts import ContractNotRespected
+
+    graph = Graph()
+
+    @graph.register(
+        inputs=[Input(name='a', contract='int,>0'), 'b'],
+        outputs=['c']
+    )
+    def f_my_function(a, b):
+        return a + b
+
+    res = graph.calculate(data={'a': 2, 'b': 3})
+    assert res == 5
+    res = graph.calculate(data={'a': 2, 'b': 3})
+    assert res == 5
+
+    with pytest.raises(ContractNotRespected) as err:
+        res = graph.calculate(data={'a': -2, 'b': 3})
+
+    assert "Condition -2 > 0 not respected" in str(err.value)
