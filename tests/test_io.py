@@ -1,4 +1,4 @@
-from pyungo.io import Input
+from pyungo.io import Input, Output
 
 
 def test_Input():
@@ -32,3 +32,11 @@ def test_Input_constant():
     assert inp.is_arg is False
     assert inp.is_kwarg is False
     assert inp.is_constant is True
+
+
+def test_Output():
+    out = Output('a')
+    assert out.name == 'a'
+    out.value = 2
+    assert out._value == 2
+    assert out.value == 2
