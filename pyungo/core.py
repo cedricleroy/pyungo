@@ -1,3 +1,4 @@
+import uuid
 from copy import deepcopy
 import datetime as dt
 from functools import reduce
@@ -42,11 +43,8 @@ def topological_sort(data):
 
 class Node:
 
-    ID = 0
-
     def __init__(self, fct, inputs, outputs, args=None, kwargs=None):
-        Node.ID += 1
-        self._id = str(Node.ID)
+        self._id = str(uuid.uuid4())
         self._fct = fct
         self._inputs = []
         self._process_inputs(inputs)
@@ -150,7 +148,7 @@ class Node:
 
 class Graph:
     def __init__(self, parallel=False, pool_size=2):
-        self._nodes = []
+        self._nodes = {}
         self._data = None
         self._parallel = parallel
         self._pool_size = pool_size
@@ -168,14 +166,14 @@ class Graph:
     @property
     def sim_inputs(self):
         inputs = []
-        for node in self._nodes:
+        for node in self._nodes.values():
             inputs.extend(node.input_names_without_constants)
         return inputs
 
     @property
     def sim_outputs(self):
         outputs = []
-        for node in self._nodes:
+        for node in self._nodes.values():
             outputs.extend(node.output_names)
         return outputs
 
@@ -217,27 +215,25 @@ class Graph:
     def _create_node(self, fct, input_names, output_names, args_names, kwargs_names):
         node = Node(fct, input_names, output_names, args_names, kwargs_names)
         # assume that we cannot have two nodes with the same output names
-        for n in self._nodes:
+        for n in self._nodes.values():
             for out_name in n.output_names:
                 if out_name in node.output_names:
                     msg = '{} output already exist'.format(out_name)
                     raise PyungoError(msg)
-        self._nodes.append(node)
+        self._nodes[node.id] = node
 
     def _dependencies(self):
         dep = {}
-        for node in self._nodes:
+        for node in self._nodes.values():
             d = dep.setdefault(node.id, [])
             for inp in node.input_names:
-                for node2 in self._nodes:
+                for node2 in self._nodes.values():
                     if inp in node2.output_names:
                         d.append(node2.id)
         return dep
 
     def _get_node(self, id_):
-        for node in self._nodes:
-            if node.id == id_:
-                return node
+        return self._nodes[id_]
 
     def _check_inputs(self, data):
         data_inputs = set(data.keys())
