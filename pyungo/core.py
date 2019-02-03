@@ -3,7 +3,7 @@ import datetime as dt
 from functools import reduce
 import logging
 
-from pyungo.io import Input
+from pyungo.io import Input, Output
 
 
 logging.basicConfig()
@@ -44,7 +44,7 @@ class Node:
 
     ID = 0
 
-    def __init__(self, fct, inputs, output_names, args=None, kwargs=None):
+    def __init__(self, fct, inputs, outputs, args=None, kwargs=None):
         Node.ID += 1
         self._id = str(Node.ID)
         self._fct = fct
@@ -54,12 +54,13 @@ class Node:
         self._process_inputs(self._args, is_arg=True)
         self._kwargs = kwargs if kwargs else []
         self._process_inputs(self._kwargs, is_kwarg=True)
-        self._output_names = output_names
+        self._outputs = []
+        self._process_outputs(outputs)
 
     def __repr__(self):
         return 'Node({}, <{}>, {}, {})'.format(
             self._id, self._fct.__name__,
-            self.input_names, self._output_names
+            self.input_names, self.output_names
         )
 
     def __call__(self, *args, **kwargs):
@@ -67,6 +68,12 @@ class Node:
         res = self._fct(*args, **kwargs)
         t2 = dt.datetime.utcnow()
         LOGGER.info('Ran {} in {}'.format(self, t2-t1))
+        # save results to outputs
+        if len(self._outputs) == 1:
+            self._outputs[0].value = res
+        else:
+            for i, out in enumerate(self._outputs):
+                out.value = res[i]
         return res
 
     @property
@@ -89,7 +96,7 @@ class Node:
 
     @property
     def output_names(self):
-        return self._output_names
+        return [o.name for o in self._outputs]
 
     @property
     def fct_name(self):
@@ -118,12 +125,18 @@ class Node:
                 raise PyungoError(msg)
             self._inputs.append(new_input)
 
+    def _process_outputs(self, outputs):
+        for output in outputs:
+            if isinstance(output, Output):
+                new_output = output
+            elif isinstance(output, str):
+                new_output = Output(output)
+            self._outputs.append(new_output)
+
     def set_value_to_input(self, input_name, value):
         for input_ in self._inputs:
             if input_.name == input_name:
                 input_.value = value
-                if input_.contract:
-                    input_.check_contract()
                 return
         msg = 'input "{}" does not exist in this node'.format(input_name)
         raise PyungoError(msg)

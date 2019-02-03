@@ -1,7 +1,7 @@
 import pytest
 
 from pyungo.core import Graph, PyungoError
-from pyungo.io import Input
+from pyungo.io import Input, Output
 
 
 def test_simple():
@@ -311,7 +311,7 @@ def test_Input_type_input():
     assert res == 5
 
 
-def test_contract():
+def test_contract_inputs():
 
     from contracts import ContractNotRespected
 
@@ -333,3 +333,25 @@ def test_contract():
         res = graph.calculate(data={'a': -2, 'b': 3})
 
     assert "Condition -2 > 0 not respected" in str(err.value)
+
+
+def test_contract_outputs():
+
+    from contracts import ContractNotRespected
+
+    graph = Graph()
+
+    @graph.register(
+        inputs=['a', 'b'],
+        outputs=[Output('c', contract='int,>0')]
+    )
+    def f_my_function(a, b):
+        return a + b
+
+    res = graph.calculate(data={'a': 2, 'b': 3})
+    assert res == 5
+
+    with pytest.raises(ContractNotRespected) as err:
+        res = graph.calculate(data={'a': -4, 'b': 3})
+
+    assert "Condition -1 > 0 not respected" in str(err.value)
