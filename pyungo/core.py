@@ -152,6 +152,7 @@ class Graph:
         self._data = None
         self._parallel = parallel
         self._pool_size = pool_size
+        self._sorted_dep = None
         if parallel:
             try:
                 import multiprocess
@@ -251,14 +252,17 @@ class Graph:
             msg = 'The following inputs are not used by the model: {}'.format(list(diff))
             raise PyungoError(msg)
 
+    def _topological_sort(self):
+        self._sorted_dep = list(topological_sort(self._dependencies()))
+
     def calculate(self, data):
         t1 = dt.datetime.utcnow()
         LOGGER.info('Starting calculation...')
         self._data = deepcopy(data)
         self._check_inputs(data)
-        dep = self._dependencies()
-        sorted_dep = topological_sort(dep)
-        for items in sorted_dep:
+        if not self._sorted_dep:
+            self._topological_sort()
+        for items in self._sorted_dep:
             # loading node with inputs
             for item in items:
                 node = self._get_node(item)
