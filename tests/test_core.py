@@ -269,7 +269,7 @@ def test_wrong_input_type():
         def f_my_function(a, b):
             return a + b
 
-    assert "inputs need to be of type str or dict" in str(err.value)
+    assert "inputs need to be of type Input, str or dict" in str(err.value)
 
 
 def test_empty_input_dict():
