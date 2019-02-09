@@ -1,3 +1,5 @@
+""" Main module containing Graph / Node classes """
+
 import uuid
 from copy import deepcopy
 import datetime as dt
@@ -20,10 +22,27 @@ except ImportError:
 
 
 class PyungoError(Exception):
+    """ pyungo custom exception """
     pass
 
 
 def topological_sort(data):
+    """ Topological sort algorithm
+
+    Args:
+        data (dict): dictionnary representing dependencies
+            Example: {'a': ['b', 'c']} node id 'a' depends on
+            node id 'b' and 'c'
+
+    Returns
+        ordered (list): list of list of node ids
+            Example: [['a'], ['b', 'c'], ['d']]
+            The sequence is representing the order to be run.
+            The nested lists are node ids that can be run in parallel
+
+    Raises:
+        PyungoError: In case a cyclic dependency exists
+    """
     for key in data:
         data[key] = set(data[key])
     for k, v in data.items():
@@ -42,6 +61,18 @@ def topological_sort(data):
 
 
 class Node:
+    """ Node object (aka vertex in graph theory)
+
+    Args:
+        fct (function): The Python function attached to the node
+        inputs (list): List of inputs (which can be `Input`, `str` or `dict`)
+        outputs (list): List of outputs (`Output` or `str`)
+        args (list): Optional list of args
+        kwargs (list): Optional list of kwargs
+
+    Raises:
+        PyungoError: In case inputs have the wrong type
+    """
 
     def __init__(self, fct, inputs, outputs, args=None, kwargs=None):
         self._id = str(uuid.uuid4())
@@ -62,6 +93,7 @@ class Node:
         )
 
     def __call__(self, *args, **kwargs):
+        """ run the function attached to the node, and store the result """
         t1 = dt.datetime.utcnow()
         res = self._fct(*args, **kwargs)
         t2 = dt.datetime.utcnow()
@@ -76,31 +108,38 @@ class Node:
 
     @property
     def id(self):
+        """ return the unique id of the node """
         return self._id
 
     @property
     def input_names(self):
+        """ return a list of all input names """
         input_names = [i.name for i in self._inputs]
         return input_names
 
     @property
     def input_names_without_constants(self):
+        """ return list of input names, when inputs are not constants """
         input_names = [i.name for i in self._inputs if not i.is_constant]
         return input_names
 
     @property
     def kwargs(self):
+        """ return the list of kwargs """
         return self._kwargs
 
     @property
     def output_names(self):
+        """ return a list of output names """
         return [o.name for o in self._outputs]
 
     @property
     def fct_name(self):
+        """ return the function name """
         return self._fct.__name__
 
     def _process_inputs(self, inputs, is_arg=False, is_kwarg=False):
+        """ converter data passed to Input objects and store them """
         for input_ in inputs:
             if isinstance(input_, Input):
                 new_input = input_
@@ -124,6 +163,7 @@ class Node:
             self._inputs.append(new_input)
 
     def _process_outputs(self, outputs):
+        """ converter data passed to Output objects and store them """
         for output in outputs:
             if isinstance(output, Output):
                 new_output = output
@@ -132,6 +172,15 @@ class Node:
             self._outputs.append(new_output)
 
     def set_value_to_input(self, input_name, value):
+        """ set a value to the targeted input name
+
+        Args:
+            input_name (str): Name of the input
+            value: value to be assigned to the input
+
+        Raises:
+            PyungoError: In case the input name is unknown
+        """
         for input_ in self._inputs:
             if input_.name == input_name:
                 input_.value = value
@@ -140,6 +189,7 @@ class Node:
         raise PyungoError(msg)
 
     def run_with_loaded_inputs(self):
+        """ Run the node with the attached function and loaded input values """
         args = [i.value for i in self._inputs if not i.is_arg and not i.is_kwarg]
         args.extend([i.value for i in self._inputs if i.is_arg])
         kwargs = {i.name: i.value for i in self._inputs if i.is_kwarg}
@@ -147,6 +197,16 @@ class Node:
 
 
 class Graph:
+    """ Graph object, collection of related nodes
+
+    Args:
+        parallel (bool): Parallelism flag
+        pool_size (int): Size of the pool in case parallelism is enabled
+
+    Raises:
+        ImportError will raise in case parallelism is chosen and `multiprocess`
+            not installed
+    """
     def __init__(self, parallel=False, pool_size=2):
         self._nodes = {}
         self._data = None
@@ -162,10 +222,12 @@ class Graph:
 
     @property
     def data(self):
+        """ return the data of the graph (inputs + outputs) """
         return self._data
 
     @property
     def sim_inputs(self):
+        """ return input names of every nodes """
         inputs = []
         for node in self._nodes.values():
             inputs.extend(node.input_names_without_constants)
@@ -173,6 +235,7 @@ class Graph:
 
     @property
     def sim_outputs(self):
+        """ return output names of every nodes """
         outputs = []
         for node in self._nodes.values():
             outputs.extend(node.output_names)
@@ -189,9 +252,18 @@ class Graph:
 
     @staticmethod
     def run_node(node):
+        """ run the node
+
+        Args:
+            node (Node): The node to run
+
+        Returns:
+            results (tuple): node id, node output values
+        """
         return (node.id, node.run_with_loaded_inputs())
 
     def _register(self, f, **kwargs):
+        """ check if all needed inputs are there and create a new node """
         input_names = kwargs.get('inputs')
         if not input_names:
             raise PyungoError('Missing inputs parameter')
@@ -205,15 +277,26 @@ class Graph:
         )
 
     def register(self, **kwargs):
+        """ register decorator """
         def decorator(f):
             self._register(f, **kwargs)
             return f
         return decorator
 
     def add_node(self, function, **kwargs):
+        """ explicit method to add a node to the graph
+
+        Args:
+            function (function): Python function attached to the node
+            inputs (list): List of inputs (Input, str, or dict)
+            outputs (list): List of outputs (Output or str)
+            args (list): List of optional args
+            kwargs (list): List of optional kwargs
+        """
         self._register(function, **kwargs)
 
     def _create_node(self, fct, input_names, output_names, args_names, kwargs_names):
+        """ create a save the node to the graph """
         node = Node(fct, input_names, output_names, args_names, kwargs_names)
         # assume that we cannot have two nodes with the same output names
         for n in self._nodes.values():
@@ -224,6 +307,7 @@ class Graph:
         self._nodes[node.id] = node
 
     def _dependencies(self):
+        """ return dependencies among the nodes """
         dep = {}
         for node in self._nodes.values():
             d = dep.setdefault(node.id, [])
@@ -234,9 +318,11 @@ class Graph:
         return dep
 
     def _get_node(self, id_):
+        """ get a node from its id """
         return self._nodes[id_]
 
     def _check_inputs(self, data):
+        """ make sure data inputs provided are good enough """
         data_inputs = set(data.keys())
         diff = data_inputs - (data_inputs - set(self.sim_outputs))
         if diff:
@@ -253,9 +339,11 @@ class Graph:
             raise PyungoError(msg)
 
     def _topological_sort(self):
+        """ run topological sort algorithm """
         self._sorted_dep = list(topological_sort(self._dependencies()))
 
     def calculate(self, data):
+        """ run graph calculations """
         t1 = dt.datetime.utcnow()
         LOGGER.info('Starting calculation...')
         self._data = deepcopy(data)
