@@ -158,7 +158,7 @@ class Node:
                 value = input_[key]
                 new_input = Input.constant(key, value)
             else:
-                msg = 'inputs need to be of type str or dict'
+                msg = 'inputs need to be of type Input, str or dict'
                 raise PyungoError(msg)
             self._inputs.append(new_input)
 
