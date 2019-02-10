@@ -1,0 +1,317 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Developer Documentation &#8212; pyungo v0.7.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="What’s New" href="whatsnew.html" />
+    <link rel="prev" title="Features" href="features.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  <div class="document">
+    
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="index.html">
+    <img class="logo" src="_static/pyungo.jpg" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=cedricleroy&repo=pyungo&type=star&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gettingstarted.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Developer Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="whatsnew.html">What’s New</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="features.html" title="previous chapter">Features</a></li>
+      <li>Next: <a href="whatsnew.html" title="next chapter">What’s New</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="developer-documentation">
+<h1>Developer Documentation<a class="headerlink" href="#developer-documentation" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="pyungo.core.topological_sort">
+<code class="descclassname">pyungo.core.</code><code class="descname">topological_sort</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.core.topological_sort" title="Permalink to this definition">¶</a></dt>
+<dd><p>Topological sort algorithm</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<em>dict</em>) – dictionnary representing dependencies
+Example: {‘a’: [‘b’, ‘c’]} node id ‘a’ depends on
+node id ‘b’ and ‘c’</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
+<dt>list of list of node ids</dt>
+<dd>Example: [[‘a’], [‘b’, ‘c’], [‘d’]]
+The sequence is representing the order to be run.
+The nested lists are node ids that can be run in parallel</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">ordered (list)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal notranslate"><span class="pre">PyungoError</span></code> – In case a cyclic dependency exists</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyungo.core.Node">
+<em class="property">class </em><code class="descclassname">pyungo.core.</code><code class="descname">Node</code><span class="sig-paren">(</span><em>fct</em>, <em>inputs</em>, <em>outputs</em>, <em>args=None</em>, <em>kwargs=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.core.Node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Node object (aka vertex in graph theory)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>fct</strong> (<em>function</em>) – The Python function attached to the node</li>
+<li><strong>inputs</strong> (<em>list</em>) – List of inputs (which can be <cite>Input</cite>, <cite>str</cite> or <cite>dict</cite>)</li>
+<li><strong>outputs</strong> (<em>list</em>) – List of outputs (<cite>Output</cite> or <cite>str</cite>)</li>
+<li><strong>args</strong> (<em>list</em>) – Optional list of args</li>
+<li><strong>kwargs</strong> (<em>list</em>) – Optional list of kwargs</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal notranslate"><span class="pre">PyungoError</span></code> – In case inputs have the wrong type</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyungo.core.Graph">
+<em class="property">class </em><code class="descclassname">pyungo.core.</code><code class="descname">Graph</code><span class="sig-paren">(</span><em>parallel=False</em>, <em>pool_size=2</em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.core.Graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Graph object, collection of related nodes</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>parallel</strong> (<em>bool</em>) – Parallelism flag</li>
+<li><strong>pool_size</strong> (<em>int</em>) – Size of the pool in case parallelism is enabled</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><em>ImportError will raise in case parallelism is chosen and `multiprocess`</em> – not installed</p>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="pyungo.core.Graph.add_node">
+<code class="descname">add_node</code><span class="sig-paren">(</span><em>function</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.core.Graph.add_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>explicit method to add a node to the graph</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>function</strong> (<em>function</em>) – Python function attached to the node</li>
+<li><strong>inputs</strong> (<em>list</em>) – List of inputs (Input, str, or dict)</li>
+<li><strong>outputs</strong> (<em>list</em>) – List of outputs (Output or str)</li>
+<li><strong>args</strong> (<em>list</em>) – List of optional args</li>
+<li><strong>kwargs</strong> (<em>list</em>) – List of optional kwargs</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyungo.core.Graph.calculate">
+<code class="descname">calculate</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.core.Graph.calculate" title="Permalink to this definition">¶</a></dt>
+<dd><p>run graph calculations</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyungo.core.Graph.dag">
+<code class="descname">dag</code><a class="headerlink" href="#pyungo.core.Graph.dag" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the ordered nodes graph</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyungo.core.Graph.data">
+<code class="descname">data</code><a class="headerlink" href="#pyungo.core.Graph.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the data of the graph (inputs + outputs)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pyungo.core.Graph.register">
+<code class="descname">register</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.core.Graph.register" title="Permalink to this definition">¶</a></dt>
+<dd><p>register decorator</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="pyungo.core.Graph.run_node">
+<em class="property">static </em><code class="descname">run_node</code><span class="sig-paren">(</span><em>node</em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.core.Graph.run_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>run the node</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>node</strong> (<a class="reference internal" href="#pyungo.core.Node" title="pyungo.core.Node"><em>Node</em></a>) – The node to run</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">node id, node output values</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">results (tuple)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyungo.core.Graph.sim_inputs">
+<code class="descname">sim_inputs</code><a class="headerlink" href="#pyungo.core.Graph.sim_inputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>return input names of every nodes</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pyungo.core.Graph.sim_outputs">
+<code class="descname">sim_outputs</code><a class="headerlink" href="#pyungo.core.Graph.sim_outputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>return output names of every nodes</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="pyungo.io.Input">
+<em class="property">class </em><code class="descclassname">pyungo.io.</code><code class="descname">Input</code><span class="sig-paren">(</span><em>name</em>, <em>meta=None</em>, <em>contract=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.io.Input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Object representing a function input</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<em>str</em>) – The variable name of the input / output</li>
+<li><strong>meta</strong> (<em>dict</em>) – Not used yet</li>
+<li><strong>contract</strong> (<em>str</em>) – Optional contract rule used by pycontracts</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="pyungo.io.Output">
+<em class="property">class </em><code class="descclassname">pyungo.io.</code><code class="descname">Output</code><span class="sig-paren">(</span><em>name</em>, <em>meta=None</em>, <em>contract=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.io.Output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Object representing a function output</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<em>str</em>) – The variable name of the input / output</li>
+<li><strong>meta</strong> (<em>dict</em>) – Not used yet</li>
+<li><strong>contract</strong> (<em>str</em>) – Optional contract rule used by pycontracts</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
+    <div class="footer">
+      &copy;2019, Cedric Leroy.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/developer.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+    <a href="https://github.com/cedricleroy/pyungo" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>
