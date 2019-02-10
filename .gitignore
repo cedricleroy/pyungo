@@ -6,3 +6,4 @@ venv*/
 *.vscode/
 *.pytest_cache/
 .DS_Store
+docs/_build/

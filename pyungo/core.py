@@ -34,7 +34,7 @@ def topological_sort(data):
             Example: {'a': ['b', 'c']} node id 'a' depends on
             node id 'b' and 'c'
 
-    Returns
+    Returns:
         ordered (list): list of list of node ids
             Example: [['a'], ['b', 'c'], ['d']]
             The sequence is representing the order to be run.
