@@ -57,6 +57,7 @@
 <li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Documentation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">What’s New</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#v0-7-0-february-10-2019">v0.7.0 (February 10, 2019)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v0-6-0-july-6-2018">v0.6.0 (July 6, 2018)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v0-5-0-april-3-2018">v0.5.0 (April 3, 2018)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v0-4-0-march-23-2018">v0.4.0 (March 23, 2018)</a></li>
@@ -104,6 +105,30 @@
   <div class="section" id="what-s-new">
 <h1>What’s New<a class="headerlink" href="#what-s-new" title="Permalink to this headline">¶</a></h1>
 <p>These are new features and improvements of note in each release.</p>
+<div class="section" id="v0-7-0-february-10-2019">
+<h2>v0.7.0 (February 10, 2019)<a class="headerlink" href="#v0-7-0-february-10-2019" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first">Refactoring, and introduction of <code class="docutils literal notranslate"><span class="pre">Input</span></code> and <code class="docutils literal notranslate"><span class="pre">Output</span></code> objects.</p>
+</li>
+<li><p class="first">Contracts feature.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span>
+    <span class="n">my_function</span><span class="p">,</span>
+    <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">Input</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">contract</span><span class="o">=</span><span class="s1">&#39;&gt;0&#39;</span><span class="p">),</span> <span class="n">Input</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">contract</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">)],</span>
+    <span class="n">outputs</span><span class="o">=</span><span class="p">[</span><span class="n">Output</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">contract</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">)]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first">Nodes IDs refactoring (now uses uuid).</p>
+</li>
+<li><p class="first">Run topological sort only when needed.</p>
+</li>
+<li><p class="first">Everything accessible from <cite>pyungo</cite> __init__ (&#64;nelsontodd)</p>
+</li>
+<li><p class="first">Docstrings / Sphinx doc / GitHub page</p>
+</li>
+</ul>
+</div>
 <div class="section" id="v0-6-0-july-6-2018">
 <h2>v0.6.0 (July 6, 2018)<a class="headerlink" href="#v0-6-0-july-6-2018" title="Permalink to this headline">¶</a></h2>
 <ul>

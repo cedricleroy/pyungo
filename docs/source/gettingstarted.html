@@ -106,9 +106,10 @@
 and execute them in an ordered manner.</p>
 <p><strong>pyungo</strong> is built around <strong>Graphs</strong> and <strong>Nodes</strong> used in a
 <a class="reference external" href="https://en.wikipedia.org/wiki/Directed_acyclic_graph">DAG</a> (Directed Acyclic Graph).
-A <code class="docutils literal notranslate"><span class="pre">Node</span></code> represent a function being run with a defined set of inputs and returning one or
-several outputs. A <code class="docutils literal notranslate"><span class="pre">Graph</span></code> is a collection of Nodes where data can flow in an logical manner,
-the output of one node serving as input of another.</p>
+A <a class="reference internal" href="developer.html#pyungo.core.Node" title="pyungo.core.Node"><code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></a> represent a function being run with a defined set of inputs
+and returning one or several outputs. A <a class="reference internal" href="developer.html#pyungo.core.Graph" title="pyungo.core.Graph"><code class="xref py py-class docutils literal notranslate"><span class="pre">Graph</span></code></a> is a collection of
+<strong>Nodes</strong> where data can flow in an logical manner, the output of one node serving as
+input of another.</p>
 <div class="section" id="simple-example">
 <h2>Simple example<a class="headerlink" href="#simple-example" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">graph</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
@@ -132,9 +133,9 @@ the output of one node serving as input of another.</p>
 <p><strong>pyungo</strong> is registering the functions at import time. It then resolve the DAG and figure out
 the sequence at which the functions have to be run per their inputs / outputs. In this case,
 it will be function 3 then 1 and finally 2.</p>
-<p>The ordered <code class="docutils literal notranslate"><span class="pre">Graph</span></code> is run with calculate, with the given data. It returns the output of
-the last function being run (<code class="docutils literal notranslate"><span class="pre">e</span></code>), but all intermediate results are also available in the
-graph instance.</p>
+<p>The ordered <a class="reference internal" href="developer.html#pyungo.core.Graph" title="pyungo.core.Graph"><code class="xref py py-class docutils literal notranslate"><span class="pre">Graph</span></code></a> is run with calculate, with the given data. It returns
+the output of the last function being run (<code class="docutils literal notranslate"><span class="pre">e</span></code>), but all intermediate results are also
+available in the graph instance.</p>
 <p>The result will be <cite>(a + b) / 10 - a = -1.5</cite></p>
 </div>
 </div>

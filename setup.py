@@ -11,7 +11,7 @@ with open(path.join(HERE, 'README.rst')) as f:
 
 setup(
     name='pyungo',
-    version='0.6',
+    version='0.7',
     description='Function dependencies resolution and execution',
     long_description=README,
     url='https://github.com/cedricleroy/pyungo',

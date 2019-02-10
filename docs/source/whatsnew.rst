@@ -6,6 +6,28 @@ What's New
 
 These are new features and improvements of note in each release.
 
+v0.7.0 (February 10, 2019)
+==========================
+
+* Refactoring, and introduction of ``Input`` and ``Output`` objects.
+
+* Contracts feature.::
+
+    graph.add_node(
+        my_function,
+        inputs=[Input(name='a', contract='>0'), Input(name='b', contract='float')],
+        outputs=[Output(name='g', contract='float')]
+    )
+
+* Nodes IDs refactoring (now uses uuid).
+
+* Run topological sort only when needed.
+
+* Everything accessible from `pyungo` __init__ (@nelsontodd)
+
+* Docstrings / Sphinx doc / GitHub page
+
+
 v0.6.0 (July 6, 2018)
 =====================
 

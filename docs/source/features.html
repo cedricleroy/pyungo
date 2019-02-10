@@ -57,7 +57,7 @@
 <li class="toctree-l1"><a class="reference internal" href="gettingstarted.html">Getting Started</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Features</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#sanity-check">Sanity Check</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#add-a-node-explicitely">Add a node explicitely</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#add-a-node-explicitely">Add a <code class="docutils literal notranslate"><span class="pre">Node</span></code> explicitely</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#parallelism">Parallelism</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#args-kwargs-constants">Args, Kwargs, Constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#input-and-output-objects"><code class="docutils literal notranslate"><span class="pre">Input</span></code> and <code class="docutils literal notranslate"><span class="pre">Output</span></code> objects</a></li>
@@ -111,15 +111,15 @@
 <h2>Sanity Check<a class="headerlink" href="#sanity-check" title="Permalink to this headline">¶</a></h2>
 <p><strong>pyungo</strong> will raise an error in the following situations:</p>
 <ul class="simple">
-<li>Circular dependencies: The Graph need to be finite and cannot form a loop.</li>
-<li>All inputs needed to run a graph are not provided.</li>
-<li>Input collision: An input name provided as data in the graph has a conflict with at least
-of the output name.</li>
+<li>Circular dependencies: The <a class="reference internal" href="developer.html#pyungo.core.Graph" title="pyungo.core.Graph"><code class="xref py py-class docutils literal notranslate"><span class="pre">Graph</span></code></a> need to be finite and cannot form a loop.</li>
+<li>All inputs needed to run a <a class="reference internal" href="developer.html#pyungo.core.Graph" title="pyungo.core.Graph"><code class="xref py py-class docutils literal notranslate"><span class="pre">Graph</span></code></a> are not provided.</li>
+<li>Input collision: An input name provided as data in the <a class="reference internal" href="developer.html#pyungo.core.Graph" title="pyungo.core.Graph"><code class="xref py py-class docutils literal notranslate"><span class="pre">Graph</span></code></a> has a
+conflict with at least of the output name.</li>
 <li>Duplicated outputs: Several nodes are giving output(s) that have the same name.</li>
 </ul>
 </div>
 <div class="section" id="add-a-node-explicitely">
-<h2>Add a node explicitely<a class="headerlink" href="#add-a-node-explicitely" title="Permalink to this headline">¶</a></h2>
+<h2>Add a <a class="reference internal" href="developer.html#pyungo.core.Node" title="pyungo.core.Node"><code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></a> explicitely<a class="headerlink" href="#add-a-node-explicitely" title="Permalink to this headline">¶</a></h2>
 <p>While the simple example register nodes at import time with a decorator, it is possible to
 explicitely add a node a runtime. Here is the same example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">formulas</span> <span class="k">import</span> <span class="n">f_my_function_1</span><span class="p">,</span> <span class="n">f_my_function_2</span><span class="p">,</span> <span class="n">f_my_function_3</span>
@@ -139,24 +139,29 @@ explicitely add a node a runtime. Here is the same example:</p>
 <h2>Parallelism<a class="headerlink" href="#parallelism" title="Permalink to this headline">¶</a></h2>
 <p>When resolving the dag, <strong>pyungo</strong> figure out nodes that can be run in parallel.
 When creating a graph, we can specify the option <code class="docutils literal notranslate"><span class="pre">parallel=True</span></code> for running calculations
-concurently when possible, using multiprocess module. This package is not automatically
-installed with pyungo, and will need to be installed manually if parallelism is used. We can
-specify the pool size when instantiating the Graph. This will set the maximum number of processes
-that will be launched. If 3 nodes can run in parallel and just 2 processes are used, <strong>pyungo</strong>
-will run calculation on the first 2 nodes first and will run the last one as soon as a process
+concurently when possible, using <a class="reference external" href="https://pypi.org/project/multiprocess/">multiprocess</a>
+module. This package is not automatically installed with <strong>pyungo</strong>, and will need to be
+installed manually if parallelism is used. We can specify the pool size when instantiating
+the <a class="reference internal" href="developer.html#pyungo.core.Node" title="pyungo.core.Node"><code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></a>. This will set the maximum number of processes that will be
+launched. If 3 nodes can run in parallel and just 2 processes are used, <strong>pyungo</strong> will run
+calculation on the first 2 nodes first and will run the last one as soon as a process
 will be free.</p>
-<p>Instantiating a Graph with a pool of 5 processes for running calculations in parralel:</p>
+<p>Instantiating a <a class="reference internal" href="developer.html#pyungo.core.Graph" title="pyungo.core.Graph"><code class="xref py py-class docutils literal notranslate"><span class="pre">Graph</span></code></a> with a pool of 5 processes for running
+calculations in parralel:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">graph</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">(</span><span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pool_size</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>_Note:_ Running functions in parallel has a cost. Python will spend time creating / deleting
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Running functions in parallel has a cost. Python will spend time creating / deleting
 new processes. Parallelism is recommended when at least 2 concurrent nodes have heavy
 calculations which takes a significant amount of time.</p>
 </div>
+</div>
 <div class="section" id="args-kwargs-constants">
 <h2>Args, Kwargs, Constants<a class="headerlink" href="#args-kwargs-constants" title="Permalink to this headline">¶</a></h2>
-<p>If a function registred in a Node contains <code class="docutils literal notranslate"><span class="pre">args</span></code> or <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>, it is possible to define which
-data will be passed to them:</p>
+<p>If a function registred in a <a class="reference internal" href="developer.html#pyungo.core.Node" title="pyungo.core.Node"><code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></a> contains <code class="docutils literal notranslate"><span class="pre">args</span></code> or <code class="docutils literal notranslate"><span class="pre">kwargs</span></code>,
+it is possible to define which data will be passed to them:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span>
     <span class="n">my_function</span><span class="p">,</span>
     <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">],</span>
@@ -172,13 +177,13 @@ data will be passed to them:</p>
     <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
 </pre></div>
 </div>
-<p>Then, only <code class="docutils literal notranslate"><span class="pre">a</span></code> and <code class="docutils literal notranslate"><span class="pre">b</span></code> will be needed when calling <code class="docutils literal notranslate"><span class="pre">graph.calculate</span></code></p>
+<p>Then, only <code class="docutils literal notranslate"><span class="pre">a</span></code> and <code class="docutils literal notranslate"><span class="pre">b</span></code> will be needed when calling <a class="reference internal" href="developer.html#pyungo.core.Graph.calculate" title="pyungo.core.Graph.calculate"><code class="xref py py-class docutils literal notranslate"><span class="pre">calculate</span></code></a>.</p>
 </div>
 <div class="section" id="input-and-output-objects">
-<h2><code class="docutils literal notranslate"><span class="pre">Input</span></code> and <code class="docutils literal notranslate"><span class="pre">Output</span></code> objects<a class="headerlink" href="#input-and-output-objects" title="Permalink to this headline">¶</a></h2>
-<p>Inputs and outputs can be defined directly with their names, or with <code class="docutils literal notranslate"><span class="pre">Input</span></code> / <code class="docutils literal notranslate"><span class="pre">Output</span></code>
-objects. This come in handy when there is extra behavior to be attached to an input /
-output (e.g. <code class="docutils literal notranslate"><span class="pre">Contracts</span></code>).</p>
+<h2><a class="reference internal" href="developer.html#pyungo.io.Input" title="pyungo.io.Input"><code class="xref py py-class docutils literal notranslate"><span class="pre">Input</span></code></a> and <a class="reference internal" href="developer.html#pyungo.io.Output" title="pyungo.io.Output"><code class="xref py py-class docutils literal notranslate"><span class="pre">Output</span></code></a> objects<a class="headerlink" href="#input-and-output-objects" title="Permalink to this headline">¶</a></h2>
+<p>Inputs and outputs can be defined directly with their names, or with <a class="reference internal" href="developer.html#pyungo.io.Input" title="pyungo.io.Input"><code class="xref py py-class docutils literal notranslate"><span class="pre">Input</span></code></a>
+/ <a class="reference internal" href="developer.html#pyungo.io.Output" title="pyungo.io.Output"><code class="xref py py-class docutils literal notranslate"><span class="pre">Output</span></code></a> objects. This come in handy when there is extra behavior to be
+attached to an input / output (e.g. <code class="docutils literal notranslate"><span class="pre">Contracts</span></code>).</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyungo.io</span> <span class="k">import</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Output</span>
 
 <span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span>
@@ -192,7 +197,8 @@ output (e.g. <code class="docutils literal notranslate"><span class="pre">Contra
 <div class="section" id="contracts">
 <h2>Contracts<a class="headerlink" href="#contracts" title="Permalink to this headline">¶</a></h2>
 <p>Sometimes we want to make sure a value meet specific criteria before moving forward.
-<strong>pyungo</strong> uses <code class="docutils literal notranslate"><span class="pre">pycontracts</span></code> for attaching contracts to inputs or outputs.</p>
+<strong>pyungo</strong> uses <a class="reference external" href="https://andreacensi.github.io/contracts/">pycontracts</a> for attaching
+contracts to inputs or outputs.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyungo.io</span> <span class="k">import</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Output</span>
 
 <span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span>
