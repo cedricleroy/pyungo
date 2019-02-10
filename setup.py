@@ -18,6 +18,12 @@ setup(
     author='Cedric Leroy',
     author_email='cedie73@hotmail.fr',
     license='MIT',
+    extra_require={
+        'all': [
+            'multiprocess',
+            'pycontracts'
+        ]
+    },
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
