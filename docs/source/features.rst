@@ -9,15 +9,15 @@ Sanity Check
 
 **pyungo** will raise an error in the following situations:
 
-* Circular dependencies: The Graph need to be finite and cannot form a loop.
-* All inputs needed to run a graph are not provided.
-* Input collision: An input name provided as data in the graph has a conflict with at least
-  of the output name.
+* Circular dependencies: The :class:`~pyungo.core.Graph` need to be finite and cannot form a loop.
+* All inputs needed to run a :class:`~pyungo.core.Graph` are not provided.
+* Input collision: An input name provided as data in the :class:`~pyungo.core.Graph` has a
+  conflict with at least of the output name.
 * Duplicated outputs: Several nodes are giving output(s) that have the same name.
 
 
-Add a node explicitely
-######################
+Add a :class:`~pyungo.core.Node` explicitely
+############################################
 
 While the simple example register nodes at import time with a decorator, it is possible to
 explicitely add a node a runtime. Here is the same example:
@@ -41,28 +41,31 @@ Parallelism
 
 When resolving the dag, **pyungo** figure out nodes that can be run in parallel.
 When creating a graph, we can specify the option ``parallel=True`` for running calculations
-concurently when possible, using multiprocess module. This package is not automatically
-installed with pyungo, and will need to be installed manually if parallelism is used. We can
-specify the pool size when instantiating the Graph. This will set the maximum number of processes
-that will be launched. If 3 nodes can run in parallel and just 2 processes are used, **pyungo**
-will run calculation on the first 2 nodes first and will run the last one as soon as a process
+concurently when possible, using `multiprocess <https://pypi.org/project/multiprocess/>`_
+module. This package is not automatically installed with **pyungo**, and will need to be
+installed manually if parallelism is used. We can specify the pool size when instantiating
+the :class:`~pyungo.core.Node`. This will set the maximum number of processes that will be
+launched. If 3 nodes can run in parallel and just 2 processes are used, **pyungo** will run
+calculation on the first 2 nodes first and will run the last one as soon as a process
 will be free.
 
-Instantiating a Graph with a pool of 5 processes for running calculations in parralel:
+Instantiating a :class:`~pyungo.core.Graph` with a pool of 5 processes for running
+calculations in parralel:
 
 ::
 
     graph = Graph(parallel=True, pool_size=5)
 
-_Note:_ Running functions in parallel has a cost. Python will spend time creating / deleting
-new processes. Parallelism is recommended when at least 2 concurrent nodes have heavy
-calculations which takes a significant amount of time.
+.. note::
+  Running functions in parallel has a cost. Python will spend time creating / deleting
+  new processes. Parallelism is recommended when at least 2 concurrent nodes have heavy
+  calculations which takes a significant amount of time.
 
 Args, Kwargs, Constants
 #######################
 
-If a function registred in a Node contains ``args`` or ``kwargs``, it is possible to define which
-data will be passed to them:
+If a function registred in a :class:`~pyungo.core.Node` contains ``args`` or ``kwargs``,
+it is possible to define which data will be passed to them:
 
 ::
 
@@ -82,14 +85,14 @@ Sometimes, we want one of the input to be defined as a constant:
     def f_my_function(a, b):
         return a + b
 
-Then, only ``a`` and ``b`` will be needed when calling ``graph.calculate``
+Then, only ``a`` and ``b`` will be needed when calling :class:`~pyungo.core.Graph.calculate`.
 
-``Input`` and ``Output`` objects
-################################
+:class:`~pyungo.io.Input` and :class:`~pyungo.io.Output` objects
+################################################################
 
-Inputs and outputs can be defined directly with their names, or with ``Input`` / ``Output``
-objects. This come in handy when there is extra behavior to be attached to an input /
-output (e.g. ``Contracts``).
+Inputs and outputs can be defined directly with their names, or with :class:`~pyungo.io.Input`
+/ :class:`~pyungo.io.Output` objects. This come in handy when there is extra behavior to be
+attached to an input / output (e.g. ``Contracts``).
 
 ::
 
@@ -105,7 +108,8 @@ Contracts
 #########
 
 Sometimes we want to make sure a value meet specific criteria before moving forward.
-**pyungo** uses ``pycontracts`` for attaching contracts to inputs or outputs.
+**pyungo** uses `pycontracts <https://andreacensi.github.io/contracts/>`_ for attaching
+contracts to inputs or outputs.
 
 ::
 

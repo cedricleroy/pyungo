@@ -9,9 +9,10 @@ and execute them in an ordered manner.
 
 **pyungo** is built around **Graphs** and **Nodes** used in a
 `DAG <https://en.wikipedia.org/wiki/Directed_acyclic_graph>`_ (Directed Acyclic Graph).
-A ``Node`` represent a function being run with a defined set of inputs and returning one or
-several outputs. A ``Graph`` is a collection of Nodes where data can flow in an logical manner,
-the output of one node serving as input of another.
+A :class:`~pyungo.core.Node` represent a function being run with a defined set of inputs
+and returning one or several outputs. A :class:`~pyungo.core.Graph` is a collection of
+**Nodes** where data can flow in an logical manner, the output of one node serving as
+input of another.
 
 Simple example
 ##############
@@ -40,9 +41,8 @@ Simple example
 the sequence at which the functions have to be run per their inputs / outputs. In this case,
 it will be function 3 then 1 and finally 2.
 
-The ordered ``Graph`` is run with calculate, with the given data. It returns the output of
-the last function being run (``e``), but all intermediate results are also available in the
-graph instance.
+The ordered :class:`~pyungo.core.Graph` is run with calculate, with the given data. It returns
+the output of the last function being run (``e``), but all intermediate results are also
+available in the graph instance.
 
 The result will be `(a + b) / 10 - a = -1.5`
-
