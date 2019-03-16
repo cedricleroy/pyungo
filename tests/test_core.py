@@ -392,3 +392,19 @@ def test_provide_inputs_outputs_already_defined():
 
     msg = "You cannot use Input / Output in a Node if already defined"
     assert msg in str(err.value)
+
+
+def test_map():
+
+    graph = Graph()
+
+    @graph.register(
+        inputs=[Input('a', map='q'), Input('b', map='w')],
+        outputs=[Output('c', map='e')]
+    )
+    def f_my_function(a, b):
+        return a + b
+
+    res = graph.calculate(data={'q': 2, 'w': 3})
+    assert res == 5
+    assert graph.data['e'] == 5

@@ -9,15 +9,18 @@ class _IO(object):
 
     Args:
         name (str): The variable name of the input / output
+        map (str): Optional mapping name. This is the name referenced
+            in the data inputs / outputs
         meta (dict): Not used yet
         contract (str): Optional contract rule used by pycontracts
     """
 
-    def __init__(self, name, meta=None, contract=None):
+    def __init__(self, name, map=None, meta=None, contract=None):
         self._name = name
         self._meta = meta if meta is not None else {}
         self._value = None
         self._contract = None
+        self._map = map if map else self._name
         if contract:
             try:
                 from contracts.main import parse_contract_string
@@ -28,6 +31,10 @@ class _IO(object):
     @property
     def name(self):
         return self._name
+
+    @property
+    def map(self):
+        return self._map
 
     @property
     def contract(self):
@@ -50,12 +57,14 @@ class Input(_IO):
 
     Args:
         name (str): The variable name of the input / output
+        map (str): Optional mapping name. This is the name referenced
+            in the data inputs / outputs
         meta (dict): Not used yet
         contract (str): Optional contract rule used by pycontracts
     """
 
-    def __init__(self, name, meta=None, contract=None):
-        super(Input, self).__init__(name, meta, contract)
+    def __init__(self, name, map=None, meta=None, contract=None):
+        super(Input, self).__init__(name, map, meta, contract)
         self.is_arg = False
         self.is_kwarg = False
         self.is_constant = False
@@ -109,6 +118,8 @@ class Output(_IO):
 
     Args:
         name (str): The variable name of the input / output
+        map (str): Optional mapping name. This is the name referenced
+            in the data inputs / outputs
         meta (dict): Not used yet
         contract (str): Optional contract rule used by pycontracts
     """

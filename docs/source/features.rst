@@ -149,3 +149,24 @@ contracts to inputs or outputs.
         inputs=[Input(name='a', contract='>0'), Input(name='b', contract='float')],
         outputs=[Output(name='g', contract='float')]
     )
+
+Name mapping
+############
+
+Often, the name of the data we get are different from the ones used in the functions / models /
+formulas. pyungo makes things easy providing a mapping feature. Here is an example:
+
+::
+
+    graph = Graph()
+
+    @graph.register(
+        inputs=[Input('a', map='q'), Input('b', map='w')],
+        outputs=[Output('c', map='e')]
+    )
+    def f_my_function(a, b):
+        return a + b
+
+    res = graph.calculate(data={'q': 2, 'w': 3})
+    assert res == 5
+    assert graph.data['e'] == 5

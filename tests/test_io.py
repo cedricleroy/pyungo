@@ -53,3 +53,11 @@ def test_get_if_exists_ok():
     res = get_if_exists(['a', 'b', 'c', {'d': 3}], existing)
     for i, j in zip(inputs, res):  # skip the dict on purpose
         assert i == j
+
+
+def test_io_maps():
+    for Class in [Input, Output]:
+        io = Class(name='a')
+        assert io.map == 'a'
+        io = Class(name='a', map='b')
+        assert io.map == 'b'
