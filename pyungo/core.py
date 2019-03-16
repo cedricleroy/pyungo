@@ -118,15 +118,19 @@ class Node:
         return input_names
 
     @property
-    def input_names_without_constants(self):
-        """ return list of input names, when inputs are not constants """
-        input_names = [i.name for i in self._inputs if not i.is_constant]
-        return input_names
+    def inputs_without_constants(self):
+        """ return the list of inputs, when inputs are not constants """
+        inputs = [i for i in self._inputs if not i.is_constant]
+        return inputs
 
     @property
     def kwargs(self):
         """ return the list of kwargs """
         return self._kwargs
+
+    @property
+    def outputs(self):
+        return self._outputs
 
     @property
     def output_names(self):
@@ -231,18 +235,18 @@ class Graph:
 
     @property
     def sim_inputs(self):
-        """ return input names of every nodes """
+        """ return input names (mapped) of every nodes """
         inputs = []
         for node in self._nodes.values():
-            inputs.extend(node.input_names_without_constants)
+            inputs.extend([i.map for i in node.inputs_without_constants])
         return inputs
 
     @property
     def sim_outputs(self):
-        """ return output names of every nodes """
+        """ return output names (mapped) of every nodes """
         outputs = []
         for node in self._nodes.values():
-            outputs.extend(node.output_names)
+            outputs.extend([o.map for o in node.outputs])
         return outputs
 
     @property
@@ -360,9 +364,9 @@ class Graph:
             # loading node with inputs
             for item in items:
                 node = self._get_node(item)
-                args = [i_name for i_name in node.input_names_without_constants]
-                for arg in args:
-                    node.set_value_to_input(arg, self._data[arg])
+                inputs = [i for i in node.inputs_without_constants]
+                for inp in inputs:
+                    node.set_value_to_input(inp.name, self._data[inp.map])
             # running nodes
             if self._parallel:
                 pool = Pool(self._pool_size)
@@ -383,11 +387,11 @@ class Graph:
             for item in items:
                 node = self._get_node(item)
                 res = results[node.id]
-                if len(node.output_names) == 1:
-                    self._data[node.output_names[0]] = res
+                if len(node.outputs) == 1:
+                    self._data[node.outputs[0].map] = res
                 else:
-                    for i, out in enumerate(node.output_names):
-                        self._data[out] = res[i]
+                    for i, out in enumerate(node.outputs):
+                        self._data[out.map] = res[i]
         t2 = dt.datetime.utcnow()
         LOGGER.info('Calculation finished in {}'.format(t2-t1))
         return res

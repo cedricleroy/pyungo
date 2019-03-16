@@ -238,20 +238,20 @@ The nested lists are node ids that can be run in parallel</dd>
 <dl class="attribute">
 <dt id="pyungo.core.Graph.sim_inputs">
 <code class="descname">sim_inputs</code><a class="headerlink" href="#pyungo.core.Graph.sim_inputs" title="Permalink to this definition">¶</a></dt>
-<dd><p>return input names of every nodes</p>
+<dd><p>return input names (mapped) of every nodes</p>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="pyungo.core.Graph.sim_outputs">
 <code class="descname">sim_outputs</code><a class="headerlink" href="#pyungo.core.Graph.sim_outputs" title="Permalink to this definition">¶</a></dt>
-<dd><p>return output names of every nodes</p>
+<dd><p>return output names (mapped) of every nodes</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="pyungo.io.Input">
-<em class="property">class </em><code class="descclassname">pyungo.io.</code><code class="descname">Input</code><span class="sig-paren">(</span><em>name</em>, <em>meta=None</em>, <em>contract=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.io.Input" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">pyungo.io.</code><code class="descname">Input</code><span class="sig-paren">(</span><em>name</em>, <em>map=None</em>, <em>meta=None</em>, <em>contract=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.io.Input" title="Permalink to this definition">¶</a></dt>
 <dd><p>Object representing a function input</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -259,6 +259,8 @@ The nested lists are node ids that can be run in parallel</dd>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>name</strong> (<em>str</em>) – The variable name of the input / output</li>
+<li><strong>map</strong> (<em>str</em>) – Optional mapping name. This is the name referenced
+in the data inputs / outputs</li>
 <li><strong>meta</strong> (<em>dict</em>) – Not used yet</li>
 <li><strong>contract</strong> (<em>str</em>) – Optional contract rule used by pycontracts</li>
 </ul>
@@ -270,7 +272,7 @@ The nested lists are node ids that can be run in parallel</dd>
 
 <dl class="class">
 <dt id="pyungo.io.Output">
-<em class="property">class </em><code class="descclassname">pyungo.io.</code><code class="descname">Output</code><span class="sig-paren">(</span><em>name</em>, <em>meta=None</em>, <em>contract=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.io.Output" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">pyungo.io.</code><code class="descname">Output</code><span class="sig-paren">(</span><em>name</em>, <em>map=None</em>, <em>meta=None</em>, <em>contract=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.io.Output" title="Permalink to this definition">¶</a></dt>
 <dd><p>Object representing a function output</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -278,6 +280,8 @@ The nested lists are node ids that can be run in parallel</dd>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>name</strong> (<em>str</em>) – The variable name of the input / output</li>
+<li><strong>map</strong> (<em>str</em>) – Optional mapping name. This is the name referenced
+in the data inputs / outputs</li>
 <li><strong>meta</strong> (<em>dict</em>) – Not used yet</li>
 <li><strong>contract</strong> (<em>str</em>) – Optional contract rule used by pycontracts</li>
 </ul>

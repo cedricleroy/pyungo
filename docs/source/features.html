@@ -62,6 +62,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#args-kwargs-constants">Args, Kwargs, Constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#input-and-output-objects"><code class="docutils literal notranslate"><span class="pre">Input</span></code> and <code class="docutils literal notranslate"><span class="pre">Output</span></code> objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#contracts">Contracts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#name-mapping">Name mapping</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Documentation</a></li>
@@ -234,6 +235,25 @@ contracts to inputs or outputs.</p>
     <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">Input</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">contract</span><span class="o">=</span><span class="s1">&#39;&gt;0&#39;</span><span class="p">),</span> <span class="n">Input</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">contract</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">)],</span>
     <span class="n">outputs</span><span class="o">=</span><span class="p">[</span><span class="n">Output</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">contract</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">)]</span>
 <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="name-mapping">
+<h2>Name mapping<a class="headerlink" href="#name-mapping" title="Permalink to this headline">¶</a></h2>
+<p>Often, the name of the data we get are different from the ones used in the functions / models /
+formulas. pyungo makes things easy providing a mapping feature. Here is an example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">graph</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
+
+<span class="nd">@graph</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
+    <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">Input</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="nb">map</span><span class="o">=</span><span class="s1">&#39;q&#39;</span><span class="p">),</span> <span class="n">Input</span><span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="nb">map</span><span class="o">=</span><span class="s1">&#39;w&#39;</span><span class="p">)],</span>
+    <span class="n">outputs</span><span class="o">=</span><span class="p">[</span><span class="n">Output</span><span class="p">(</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="nb">map</span><span class="o">=</span><span class="s1">&#39;e&#39;</span><span class="p">)]</span>
+<span class="p">)</span>
+<span class="k">def</span> <span class="nf">f_my_function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+
+<span class="n">res</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;q&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">})</span>
+<span class="k">assert</span> <span class="n">res</span> <span class="o">==</span> <span class="mi">5</span>
+<span class="k">assert</span> <span class="n">graph</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;e&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">5</span>
 </pre></div>
 </div>
 </div>
