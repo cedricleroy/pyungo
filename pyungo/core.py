@@ -264,16 +264,16 @@ class Graph:
 
     def _register(self, f, **kwargs):
         """ check if all needed inputs are there and create a new node """
-        input_names = kwargs.get('inputs')
-        if not input_names:
+        inputs = kwargs.get('inputs')
+        if not inputs:
             raise PyungoError('Missing inputs parameter')
-        output_names = kwargs.get('outputs')
-        if not output_names:
+        outputs = kwargs.get('outputs')
+        if not outputs:
             raise PyungoError('Missing outputs parameters')
         args_names = kwargs.get('args')
         kwargs_names = kwargs.get('kwargs')
         self._create_node(
-            f, input_names, output_names, args_names, kwargs_names
+            f, inputs, outputs, args_names, kwargs_names
         )
 
     def register(self, **kwargs):
@@ -295,9 +295,9 @@ class Graph:
         """
         self._register(function, **kwargs)
 
-    def _create_node(self, fct, input_names, output_names, args_names, kwargs_names):
+    def _create_node(self, fct, inputs, outputs, args_names, kwargs_names):
         """ create a save the node to the graph """
-        node = Node(fct, input_names, output_names, args_names, kwargs_names)
+        node = Node(fct, inputs, outputs, args_names, kwargs_names)
         # assume that we cannot have two nodes with the same output names
         for n in self._nodes.values():
             for out_name in n.output_names:
