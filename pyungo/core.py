@@ -6,7 +6,7 @@ import datetime as dt
 from functools import reduce
 import logging
 
-from pyungo.io import Input, Output
+from pyungo.io import Input, Output, get_if_exists
 
 
 logging.basicConfig()
@@ -200,6 +200,8 @@ class Graph:
     """ Graph object, collection of related nodes
 
     Args:
+        inputs (list): List of optional `Input` if defined separately
+        outputs (list): List of optional `Output` if defined separately
         parallel (bool): Parallelism flag
         pool_size (int): Size of the pool in case parallelism is enabled
 
@@ -207,7 +209,7 @@ class Graph:
         ImportError will raise in case parallelism is chosen and `multiprocess`
             not installed
     """
-    def __init__(self, parallel=False, pool_size=2):
+    def __init__(self, inputs=None, outputs=None, parallel=False, pool_size=2):
         self._nodes = {}
         self._data = None
         self._parallel = parallel
@@ -219,6 +221,8 @@ class Graph:
             except ImportError:
                 msg = 'multiprocess package is needed for parralelism'
                 raise ImportError(msg)
+        self._inputs = {i.name: i for i in inputs} if inputs else None
+        self._outputs = {o.name: o for o in outputs} if outputs else None
 
     @property
     def data(self):
@@ -264,16 +268,16 @@ class Graph:
 
     def _register(self, f, **kwargs):
         """ check if all needed inputs are there and create a new node """
-        input_names = kwargs.get('inputs')
-        if not input_names:
+        inputs = kwargs.get('inputs')
+        if not inputs:
             raise PyungoError('Missing inputs parameter')
-        output_names = kwargs.get('outputs')
-        if not output_names:
+        outputs = kwargs.get('outputs')
+        if not outputs:
             raise PyungoError('Missing outputs parameters')
         args_names = kwargs.get('args')
         kwargs_names = kwargs.get('kwargs')
         self._create_node(
-            f, input_names, output_names, args_names, kwargs_names
+            f, inputs, outputs, args_names, kwargs_names
         )
 
     def register(self, **kwargs):
@@ -295,9 +299,11 @@ class Graph:
         """
         self._register(function, **kwargs)
 
-    def _create_node(self, fct, input_names, output_names, args_names, kwargs_names):
+    def _create_node(self, fct, inputs, outputs, args_names, kwargs_names):
         """ create a save the node to the graph """
-        node = Node(fct, input_names, output_names, args_names, kwargs_names)
+        inputs = get_if_exists(inputs, self._inputs)
+        outputs = get_if_exists(outputs, self._outputs)
+        node = Node(fct, inputs, outputs, args_names, kwargs_names)
         # assume that we cannot have two nodes with the same output names
         for n in self._nodes.values():
             for out_name in n.output_names:

@@ -104,6 +104,35 @@ attached to an input / output (e.g. ``Contracts``).
         outputs=[Output(name='g')]
     )
 
+Often, inputs are used multiple times across the nodes. In those cases, it is better to define
+inputs only once (with their special features if any). It is possible to pass a list of 
+:class:`~pyungo.io.Input` / :class:`~pyungo.io.Output` objects a :class:`~pyungo.core.Graph`:
+
+::
+
+    from pyungo.io import Input, Output
+
+    inputs = [Input(name='a'), Input(name='b')]
+    outputs = [Output(name='c'), Output(name='d')]
+
+    graph = Graph(inputs, outputs)
+
+    graph.add_node(
+        my_function,
+        inputs=['a', 'b'],
+        outputs=['c']
+    )
+
+    graph.add_node(
+        my_other_function,
+        inputs=['c', 'b'],
+        outputs=['d']
+    )
+
+.. note::
+   If inputs / outputs are explicitely provided to a graph, inputs / outputs defined
+   in the nodes can only be strings.
+
 Contracts
 #########
 
