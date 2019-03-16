@@ -1,4 +1,4 @@
-from pyungo.io import Input, Output
+from pyungo.io import Input, Output, get_if_exists
 
 
 def test_Input():
@@ -40,3 +40,16 @@ def test_Output():
     out.value = 2
     assert out._value == 2
     assert out.value == 2
+
+
+def test_get_if_exists_do_not_exists():
+    res = get_if_exists([1, 2, 3], [])
+    assert res == [1, 2, 3]
+
+
+def test_get_if_exists_ok():
+    inputs = [Input('a'), Input('b'), Input('c')]
+    existing = {i.name: i for i in inputs}
+    res = get_if_exists(['a', 'b', 'c', {'d': 3}], existing)
+    for i, j in zip(inputs, res):  # skip the dict on purpose
+        assert i == j

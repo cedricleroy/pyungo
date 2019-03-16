@@ -193,6 +193,34 @@ attached to an input / output (e.g. <code class="docutils literal notranslate"><
 <span class="p">)</span>
 </pre></div>
 </div>
+<p>Often, inputs are used multiple times across the nodes. In those cases, it is better to define
+inputs only once (with their special features if any). It is possible to pass a list of
+<a class="reference internal" href="developer.html#pyungo.io.Input" title="pyungo.io.Input"><code class="xref py py-class docutils literal notranslate"><span class="pre">Input</span></code></a> / <a class="reference internal" href="developer.html#pyungo.io.Output" title="pyungo.io.Output"><code class="xref py py-class docutils literal notranslate"><span class="pre">Output</span></code></a> objects a <a class="reference internal" href="developer.html#pyungo.core.Graph" title="pyungo.core.Graph"><code class="xref py py-class docutils literal notranslate"><span class="pre">Graph</span></code></a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyungo.io</span> <span class="k">import</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Output</span>
+
+<span class="n">inputs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Input</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">),</span> <span class="n">Input</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">)]</span>
+<span class="n">outputs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Output</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;c&#39;</span><span class="p">),</span> <span class="n">Output</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;d&#39;</span><span class="p">)]</span>
+
+<span class="n">graph</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">outputs</span><span class="p">)</span>
+
+<span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span>
+    <span class="n">my_function</span><span class="p">,</span>
+    <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">],</span>
+    <span class="n">outputs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span>
+    <span class="n">my_other_function</span><span class="p">,</span>
+    <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">],</span>
+    <span class="n">outputs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;d&#39;</span><span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If inputs / outputs are explicitely provided to a graph, inputs / outputs defined
+in the nodes can only be strings.</p>
+</div>
 </div>
 <div class="section" id="contracts">
 <h2>Contracts<a class="headerlink" href="#contracts" title="Permalink to this headline">¶</a></h2>

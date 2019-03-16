@@ -355,3 +355,40 @@ def test_contract_outputs():
         res = graph.calculate(data={'a': -4, 'b': 3})
 
     assert "Condition -1 > 0 not respected" in str(err.value)
+
+
+def test_provide_inputs_outputs():
+
+    inputs = [Input('a'), Input('b')]
+    outputs = [Output('c')]
+
+    graph = Graph(inputs=inputs, outputs=outputs)
+
+    @graph.register(
+        inputs=['a', 'b'],
+        outputs=['c']
+    )
+    def f_my_function(a, b):
+        return a + b
+
+    res = graph.calculate(data={'a': 2, 'b': 3})
+    assert res == 5
+
+
+def test_provide_inputs_outputs_already_defined():
+
+    inputs = [Input('a'), Input('b')]
+    outputs = [Output('c')]
+
+    graph = Graph(inputs=inputs, outputs=outputs)
+
+    with pytest.raises(TypeError) as err:
+        @graph.register(
+            inputs=['a', 'b'],
+            outputs=[Output('c')]
+        )
+        def f_my_function(a, b):
+            return a + b
+
+    msg = "You cannot use Input / Output in a Node if already defined"
+    assert msg in str(err.value)

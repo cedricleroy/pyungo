@@ -117,3 +117,28 @@ class Output(_IO):
         return '<{} value={}>'.format(
             self._name, self.value
         )
+
+
+def get_if_exists(provided, existing):
+    if not existing:
+        return provided
+    res = []
+    for p in provided:
+        is_io = False
+        if isinstance(p, str):
+            name = p
+        elif isinstance(p, Input) or isinstance(p, Output):
+            name = p.name
+            is_io = True
+        else:
+            res.append(p)
+            continue
+        exist = existing.get(name)
+        if exist:
+            if is_io:
+                msg = 'You cannot use Input / Output in a Node if already defined'
+                raise TypeError(msg)
+            res.append(exist)
+        else:
+            res.append(p)
+    return res
