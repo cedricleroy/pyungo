@@ -61,8 +61,9 @@
 <li class="toctree-l2"><a class="reference internal" href="#parallelism">Parallelism</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#args-kwargs-constants">Args, Kwargs, Constants</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#input-and-output-objects"><code class="docutils literal notranslate"><span class="pre">Input</span></code> and <code class="docutils literal notranslate"><span class="pre">Output</span></code> objects</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#contracts">Contracts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#schema">Schema</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#name-mapping">Name mapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#contracts">Contracts</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Documentation</a></li>
@@ -223,20 +224,35 @@ inputs only once (with their special features if any). It is possible to pass a 
 in the nodes can only be strings.</p>
 </div>
 </div>
-<div class="section" id="contracts">
-<h2>Contracts<a class="headerlink" href="#contracts" title="Permalink to this headline">¶</a></h2>
-<p>Sometimes we want to make sure a value meet specific criteria before moving forward.
-<strong>pyungo</strong> uses <a class="reference external" href="https://andreacensi.github.io/contracts/">pycontracts</a> for attaching
-contracts to inputs or outputs.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyungo.io</span> <span class="k">import</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Output</span>
+<div class="section" id="schema">
+<h2>Schema<a class="headerlink" href="#schema" title="Permalink to this headline">¶</a></h2>
+<p>Inputs validation is an important step to run a model with confidence. pyungo uses the
+<a class="reference external" href="https://json-schema.org/">JSON Schema specification</a> through a Python library:
+<a class="reference external" href="https://github.com/Julian/jsonschema">jsonschema</a>. The following is now possible:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">schema</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;object&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;properties&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">},</span>
+        <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;number&quot;</span><span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
 
-<span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span>
-    <span class="n">my_function</span><span class="p">,</span>
-    <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">Input</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">contract</span><span class="o">=</span><span class="s1">&#39;&gt;0&#39;</span><span class="p">),</span> <span class="n">Input</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">contract</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">)],</span>
-    <span class="n">outputs</span><span class="o">=</span><span class="p">[</span><span class="n">Output</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">contract</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">)]</span>
+<span class="n">graph</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">(</span><span class="n">schema</span><span class="o">=</span><span class="n">schema</span><span class="p">)</span>
+
+<span class="nd">@graph</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
+    <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">],</span>
+    <span class="n">outputs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">]</span>
 <span class="p">)</span>
+<span class="k">def</span> <span class="nf">f_my_function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+
+<span class="n">graph</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;a&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="s1">&#39;2&#39;</span><span class="p">})</span>
 </pre></div>
 </div>
+<p>The calculation is going to fail as <code class="docutils literal notranslate"><span class="pre">b</span></code> is of type string. It is better to catch this problem
+early on before running the model. As we provided a schema saying we explicitely want <code class="docutils literal notranslate"><span class="pre">b</span></code> to
+be of type <code class="docutils literal notranslate"><span class="pre">number</span></code>, the data validation against the schema will fail with the following error:
+<code class="docutils literal notranslate"><span class="pre">'2'</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">of</span> <span class="pre">type</span> <span class="pre">'number'</span></code>.</p>
 </div>
 <div class="section" id="name-mapping">
 <h2>Name mapping<a class="headerlink" href="#name-mapping" title="Permalink to this headline">¶</a></h2>
@@ -254,6 +270,21 @@ formulas. pyungo makes things easy providing a mapping feature. Here is an examp
 <span class="n">res</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">calculate</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;q&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">})</span>
 <span class="k">assert</span> <span class="n">res</span> <span class="o">==</span> <span class="mi">5</span>
 <span class="k">assert</span> <span class="n">graph</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;e&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">5</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="contracts">
+<h2>Contracts<a class="headerlink" href="#contracts" title="Permalink to this headline">¶</a></h2>
+<p>Sometimes we want to make sure a value meet specific criteria before moving forward.
+<strong>pyungo</strong> uses <a class="reference external" href="https://andreacensi.github.io/contracts/">pycontracts</a> for attaching
+contracts to inputs or outputs.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyungo.io</span> <span class="k">import</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Output</span>
+
+<span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span>
+    <span class="n">my_function</span><span class="p">,</span>
+    <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">Input</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">contract</span><span class="o">=</span><span class="s1">&#39;&gt;0&#39;</span><span class="p">),</span> <span class="n">Input</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">contract</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">)],</span>
+    <span class="n">outputs</span><span class="o">=</span><span class="p">[</span><span class="n">Output</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">contract</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">)]</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </div>

@@ -19,6 +19,7 @@ jobs:
           command: |
             pip install multiprocess --user
             pip install pycontracts --user
+            pip install jsonschema --user
       - run:
           name: run tests
           command: |

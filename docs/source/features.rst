@@ -133,22 +133,38 @@ inputs only once (with their special features if any). It is possible to pass a 
    If inputs / outputs are explicitely provided to a graph, inputs / outputs defined
    in the nodes can only be strings.
 
-Contracts
-#########
+Schema
+######
 
-Sometimes we want to make sure a value meet specific criteria before moving forward.
-**pyungo** uses `pycontracts <https://andreacensi.github.io/contracts/>`_ for attaching
-contracts to inputs or outputs.
+Inputs validation is an important step to run a model with confidence. pyungo uses the
+`JSON Schema specification <https://json-schema.org/>`_ through a Python library: 
+`jsonschema <https://github.com/Julian/jsonschema>`_. The following is now possible:
 
 ::
 
-    from pyungo.io import Input, Output
+    schema = {
+        "type": "object",
+        "properties": {
+            "a": {"type": "number"},
+            "b": {"type": "number"}
+        }
+    }
 
-    graph.add_node(
-        my_function,
-        inputs=[Input(name='a', contract='>0'), Input(name='b', contract='float')],
-        outputs=[Output(name='g', contract='float')]
+    graph = Graph(schema=schema)
+
+    @graph.register(
+        inputs=['a', 'b'],
+        outputs=['c']
     )
+    def f_my_function(a, b):
+        return a + b
+
+    graph.calculate(data={'a': 1, 'b': '2'})
+
+The calculation is going to fail as ``b`` is of type string. It is better to catch this problem
+early on before running the model. As we provided a schema saying we explicitely want ``b`` to
+be of type ``number``, the data validation against the schema will fail with the following error:
+``'2' is not of type 'number'``.
 
 Name mapping
 ############
@@ -170,3 +186,20 @@ formulas. pyungo makes things easy providing a mapping feature. Here is an examp
     res = graph.calculate(data={'q': 2, 'w': 3})
     assert res == 5
     assert graph.data['e'] == 5
+
+Contracts
+#########
+
+Sometimes we want to make sure a value meet specific criteria before moving forward.
+**pyungo** uses `pycontracts <https://andreacensi.github.io/contracts/>`_ for attaching
+contracts to inputs or outputs.
+
+::
+
+    from pyungo.io import Input, Output
+
+    graph.add_node(
+        my_function,
+        inputs=[Input(name='a', contract='>0'), Input(name='b', contract='float')],
+        outputs=[Output(name='g', contract='float')]
+    )
