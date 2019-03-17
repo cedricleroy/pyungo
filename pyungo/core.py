@@ -145,7 +145,8 @@ class Node:
                     new_input = Input(input_)
             elif isinstance(input_, dict):
                 if len(input_) != 1:
-                    msg = 'dict inputs should have only one key and cannot be empty'
+                    msg = ('dict inputs should have only one key '
+                           'and cannot be empty')
                     raise PyungoError(msg)
                 key = next(iter(input_))
                 value = input_[key]
@@ -183,7 +184,8 @@ class Node:
 
     def run_with_loaded_inputs(self):
         """ Run the node with the attached function and loaded input values """
-        args = [i.value for i in self._inputs if not i.is_arg and not i.is_kwarg]
+        args = [i.value for i in self._inputs
+                if not i.is_arg and not i.is_kwarg]
         args.extend([i.value for i in self._inputs if i.is_arg])
         kwargs = {i.name: i.value for i in self._inputs if i.is_kwarg}
         return self(*args, **kwargs)

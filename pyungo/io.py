@@ -147,7 +147,8 @@ def get_if_exists(provided, existing):
         exist = existing.get(name)
         if exist:
             if is_io:
-                msg = 'You cannot use Input / Output in a Node if already defined'
+                msg = ('You cannot use Input / Output in a '
+                       'Node if already defined')
                 raise TypeError(msg)
             res.append(exist)
         else:

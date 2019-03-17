@@ -31,8 +31,8 @@ class Data:
         data_inputs = set(self.inputs.keys())
         diff = data_inputs - (data_inputs - set(sim_outputs))
         if diff:
-            msg = 'The following inputs are already used in the model: {}'.format(list(diff))
-            raise PyungoError(msg)
+            msg = 'The following inputs are already used in the model: {}'
+            raise PyungoError(msg.format(list(diff)))
         inputs_to_provide = set(sim_inputs) - set(sim_outputs)
         diff = inputs_to_provide - data_inputs
         if diff:
@@ -40,5 +40,5 @@ class Data:
             raise PyungoError(msg)
         diff = data_inputs - inputs_to_provide
         if diff:
-            msg = 'The following inputs are not used by the model: {}'.format(list(diff))
-            raise PyungoError(msg)
+            msg = 'The following inputs are not used by the model: {}'
+            raise PyungoError(msg.format(list(diff)))
