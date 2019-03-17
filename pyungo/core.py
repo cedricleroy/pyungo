@@ -319,23 +319,6 @@ class Graph:
         """ get a node from its id """
         return self._nodes[id_]
 
-    def _check_inputs(self, data):
-        """ make sure data inputs provided are good enough """
-        data_inputs = set(data.keys())
-        diff = data_inputs - (data_inputs - set(self.sim_outputs))
-        if diff:
-            msg = 'The following inputs are already used in the model: {}'.format(list(diff))
-            raise PyungoError(msg)
-        inputs_to_provide = set(self.sim_inputs) - set(self.sim_outputs)
-        diff = inputs_to_provide - data_inputs
-        if diff:
-            msg = 'The following inputs are needed: {}'.format(list(diff))
-            raise PyungoError(msg)
-        diff = data_inputs - inputs_to_provide
-        if diff:
-            msg = 'The following inputs are not used by the model: {}'.format(list(diff))
-            raise PyungoError(msg)
-
     def _topological_sort(self):
         """ run topological sort algorithm """
         self._sorted_dep = list(topological_sort(self._dependencies()))
