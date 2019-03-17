@@ -6,6 +6,17 @@ What's New
 
 These are new features and improvements of note in each release.
 
+v0.8.0 (March 17, 2019)
+=======================
+
+* Can pass list of ``Input`` / ``Output`` to ``Graph``.
+
+* Names mapping.
+
+* Inputs validation with JSON Schema.
+
+* Some misc. refactoring and styling.
+
 v0.7.0 (February 10, 2019)
 ==========================
 

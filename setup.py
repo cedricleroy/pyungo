@@ -1,6 +1,8 @@
 from setuptools import setup
 from os import path
 
+from pyungo import __version__
+
 
 HERE = path.abspath(path.dirname(__file__))
 
@@ -11,7 +13,7 @@ with open(path.join(HERE, 'README.rst')) as f:
 
 setup(
     name='pyungo',
-    version='0.7',
+    version=__version__,
     description='Function dependencies resolution and execution',
     long_description=README,
     url='https://github.com/cedricleroy/pyungo',
