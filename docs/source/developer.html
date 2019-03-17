@@ -153,7 +153,7 @@ The nested lists are node ids that can be run in parallel</dd>
 
 <dl class="class">
 <dt id="pyungo.core.Graph">
-<em class="property">class </em><code class="descclassname">pyungo.core.</code><code class="descname">Graph</code><span class="sig-paren">(</span><em>inputs=None</em>, <em>outputs=None</em>, <em>parallel=False</em>, <em>pool_size=2</em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.core.Graph" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">pyungo.core.</code><code class="descname">Graph</code><span class="sig-paren">(</span><em>inputs=None</em>, <em>outputs=None</em>, <em>parallel=False</em>, <em>pool_size=2</em>, <em>schema=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.core.Graph" title="Permalink to this definition">¶</a></dt>
 <dd><p>Graph object, collection of related nodes</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -164,6 +164,7 @@ The nested lists are node ids that can be run in parallel</dd>
 <li><strong>outputs</strong> (<em>list</em>) – List of optional <cite>Output</cite> if defined separately</li>
 <li><strong>parallel</strong> (<em>bool</em>) – Parallelism flag</li>
 <li><strong>pool_size</strong> (<em>int</em>) – Size of the pool in case parallelism is enabled</li>
+<li><strong>schema</strong> (<em>dict</em>) – Optional JSON schema to validate inputs data</li>
 </ul>
 </td>
 </tr>

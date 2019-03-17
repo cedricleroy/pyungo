@@ -408,3 +408,34 @@ def test_map():
     res = graph.calculate(data={'q': 2, 'w': 3})
     assert res == 5
     assert graph.data['e'] == 5
+
+
+def test_schema():
+
+    from jsonschema import ValidationError
+
+    schema = {
+        "type": "object",
+        "properties": {
+            "a": {"type": "number"},
+            "b": {"type": "number"}
+        }
+    }
+
+    graph = Graph(schema=schema)
+
+    @graph.register(
+        inputs=['a', 'b'],
+        outputs=['c']
+    )
+    def f_my_function(a, b):
+        return a + b
+
+    with pytest.raises(ValidationError) as err:
+        graph.calculate(data={'a': 1, 'b': '2'})
+
+    msg = "'2' is not of type 'number'"
+    assert msg in str(err.value)
+
+    res = graph.calculate(data={'a': 1, 'b': 2})
+    assert res == 3

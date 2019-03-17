@@ -20,6 +20,12 @@ except ImportError:
     msg = 'multiprocess is not installed and needed for parralelism'
     LOGGER.warning(msg)
 
+try:
+    import jsonschema
+except ImportError:
+    msg = 'jsonschema package is needed for validating data'
+    raise ImportError(msg)
+
 
 class PyungoError(Exception):
     """ pyungo custom exception """
@@ -208,16 +214,19 @@ class Graph:
         outputs (list): List of optional `Output` if defined separately
         parallel (bool): Parallelism flag
         pool_size (int): Size of the pool in case parallelism is enabled
+        schema (dict): Optional JSON schema to validate inputs data
 
     Raises:
         ImportError will raise in case parallelism is chosen and `multiprocess`
             not installed
     """
-    def __init__(self, inputs=None, outputs=None, parallel=False, pool_size=2):
+    def __init__(self, inputs=None, outputs=None, parallel=False, pool_size=2,
+                 schema=None):
         self._nodes = {}
         self._data = None
         self._parallel = parallel
         self._pool_size = pool_size
+        self._schema = schema
         self._sorted_dep = None
         if parallel:
             try:
@@ -354,6 +363,9 @@ class Graph:
 
     def calculate(self, data):
         """ run graph calculations """
+        # make sure data is valid when using schema
+        if self._schema:
+            jsonschema.validate(instance=data, schema=self._schema)
         t1 = dt.datetime.utcnow()
         LOGGER.info('Starting calculation...')
         self._data = deepcopy(data)

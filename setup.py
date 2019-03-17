@@ -21,7 +21,8 @@ setup(
     extra_require={
         'all': [
             'multiprocess',
-            'pycontracts'
+            'pycontracts',
+            'jsonschema'
         ]
     },
     classifiers=[
