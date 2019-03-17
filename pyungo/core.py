@@ -14,19 +14,6 @@ LOGGER = logging.getLogger()
 LOGGER.setLevel(logging.INFO)
 
 
-try:
-    from multiprocess import Pool
-except ImportError:
-    msg = 'multiprocess is not installed and needed for parralelism'
-    LOGGER.warning(msg)
-
-try:
-    import jsonschema
-except ImportError:
-    msg = 'jsonschema package is needed for validating data'
-    raise ImportError(msg)
-
-
 class PyungoError(Exception):
     """ pyungo custom exception """
     pass
@@ -228,12 +215,6 @@ class Graph:
         self._pool_size = pool_size
         self._schema = schema
         self._sorted_dep = None
-        if parallel:
-            try:
-                import multiprocess
-            except ImportError:
-                msg = 'multiprocess package is needed for parralelism'
-                raise ImportError(msg)
         self._inputs = {i.name: i for i in inputs} if inputs else None
         self._outputs = {o.name: o for o in outputs} if outputs else None
 
@@ -365,6 +346,11 @@ class Graph:
         """ run graph calculations """
         # make sure data is valid when using schema
         if self._schema:
+            try:
+                import jsonschema
+            except ImportError:
+                msg = 'jsonschema package is needed for validating data'
+                raise ImportError(msg)
             jsonschema.validate(instance=data, schema=self._schema)
         t1 = dt.datetime.utcnow()
         LOGGER.info('Starting calculation...')
@@ -381,6 +367,11 @@ class Graph:
                     node.set_value_to_input(inp.name, self._data[inp.map])
             # running nodes
             if self._parallel:
+                try:
+                    from multiprocess import Pool
+                except ImportError:
+                    msg = 'multiprocess package is needed for parralelism'
+                    raise ImportError(msg)
                 pool = Pool(self._pool_size)
                 results = pool.map(
                     Graph.run_node,
