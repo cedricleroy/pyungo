@@ -1,22 +1,18 @@
 """ Main module containing Graph / Node classes """
 
 import uuid
-from copy import deepcopy
 import datetime as dt
 from functools import reduce
 import logging
 
 from pyungo.io import Input, Output, get_if_exists
+from pyungo.errors import PyungoError
+from pyungo.data import Data
 
 
 logging.basicConfig()
 LOGGER = logging.getLogger()
 LOGGER.setLevel(logging.INFO)
-
-
-class PyungoError(Exception):
-    """ pyungo custom exception """
-    pass
 
 
 def topological_sort(data):
@@ -354,8 +350,8 @@ class Graph:
             jsonschema.validate(instance=data, schema=self._schema)
         t1 = dt.datetime.utcnow()
         LOGGER.info('Starting calculation...')
-        self._data = deepcopy(data)
-        self._check_inputs(data)
+        self._data = Data(data)
+        self._data.check_inputs(self.sim_inputs, self.sim_outputs)
         if not self._sorted_dep:
             self._topological_sort()
         for items in self._sorted_dep:
