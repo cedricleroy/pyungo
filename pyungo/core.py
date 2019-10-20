@@ -352,14 +352,20 @@ class Graph:
             for item in items:
                 node = self._get_node(item)
                 inputs = [i for i in node.inputs_without_constants]
+                kwarg_values = inspect.getargspec(node._fct).defaults
+
+                if node.kwargs and kwarg_values:
+                    kwarg_names = (inspect.getargspec(node._fct)
+                                   .args[-len(kwarg_values):])
+                    kwarg_defaults = {k: v for k, v
+                                      in zip(kwarg_names, kwarg_values)}
                 for inp in inputs:
                     if (not inp.is_kwarg or
                             (inp.is_kwarg and inp.map in self._data._inputs)):
                         node.set_value_to_input(inp.name, self._data[inp.map])
                     else:
-                        inp_default = (inspect.signature(node._fct)
-                                       .parameters[inp.map].default)
-                        node.set_value_to_input(inp.name, inp_default)
+                        node.set_value_to_input(inp.name,
+                                                kwarg_defaults[inp.name])
 
             # running nodes
             if self._parallel:
