@@ -4,6 +4,7 @@ import uuid
 import datetime as dt
 from functools import reduce
 import logging
+import inspect
 
 from pyungo.io import Input, Output, get_if_exists
 from pyungo.errors import PyungoError
@@ -226,8 +227,15 @@ class Graph:
         """ return input names (mapped) of every nodes """
         inputs = []
         for node in self._nodes.values():
-            inputs.extend([i.map for i in node.inputs_without_constants])
+            inputs.extend([i.map for i in node.inputs_without_constants
+                           if not i.is_kwarg])
         return inputs
+
+    @property
+    def sim_kwargs(self):
+        """ return kwarg names (mapped) of every nodes """
+        kwargs = [k for node in self._nodes.values() for k in node.kwargs]
+        return kwargs
 
     @property
     def sim_outputs(self):
@@ -336,7 +344,7 @@ class Graph:
         t1 = dt.datetime.utcnow()
         LOGGER.info('Starting calculation...')
         self._data = Data(data)
-        self._data.check_inputs(self.sim_inputs, self.sim_outputs)
+        self._data.check_inputs(self.sim_inputs, self.sim_outputs, self.sim_kwargs)
         if not self._sorted_dep:
             self._topological_sort()
         for items in self._sorted_dep:
@@ -345,7 +353,14 @@ class Graph:
                 node = self._get_node(item)
                 inputs = [i for i in node.inputs_without_constants]
                 for inp in inputs:
-                    node.set_value_to_input(inp.name, self._data[inp.map])
+                    if (not inp.is_kwarg or
+                            (inp.is_kwarg and inp.map in self._data._inputs)):
+                        node.set_value_to_input(inp.name, self._data[inp.map])
+                    else:
+                        inp_default = (inspect.signature(node._fct)
+                                       .parameters[inp.map].default)
+                        node.set_value_to_input(inp.name, inp_default)
+
             # running nodes
             if self._parallel:
                 try:
