@@ -26,7 +26,7 @@ class Data:
     def __setitem__(self, key, val):
         self._outputs[key] = val
 
-    def check_inputs(self, sim_inputs, sim_outputs):
+    def check_inputs(self, sim_inputs, sim_outputs, sim_kwargs):
         """ make sure data inputs provided are good enough """
         data_inputs = set(self.inputs.keys())
         diff = data_inputs - (data_inputs - set(sim_outputs))
@@ -38,7 +38,7 @@ class Data:
         if diff:
             msg = 'The following inputs are needed: {}'.format(list(diff))
             raise PyungoError(msg)
-        diff = data_inputs - inputs_to_provide
+        diff = data_inputs - inputs_to_provide - set(sim_kwargs)
         if diff:
             msg = 'The following inputs are not used by the model: {}'
             raise PyungoError(msg.format(list(diff)))

@@ -439,3 +439,16 @@ def test_schema():
 
     res = graph.calculate(data={'a': 1, 'b': 2})
     assert res == 3
+
+
+def test_optional_kwargs():
+    graph = Graph()
+
+    @graph.register(inputs=['a'], kwargs=['b'], outputs=['c'])
+    def f(a, b=2):
+        return a + b
+
+    res = graph.calculate(data={'a': 1})
+
+    assert res == 3
+    assert graph.data['c'] == 3
