@@ -73,6 +73,8 @@ class Node:
         self._process_inputs(self._args, is_arg=True)
         self._kwargs = kwargs if kwargs else []
         self._process_inputs(self._kwargs, is_kwarg=True)
+        self._kwargs_default = {}
+        self._process_kwargs(self._kwargs)
         self._outputs = []
         self._process_outputs(outputs)
 
@@ -156,6 +158,15 @@ class Node:
                 msg = 'inputs need to be of type Input, str or dict'
                 raise PyungoError(msg)
             self._inputs.append(new_input)
+
+    def _process_kwargs(self, kwargs):
+        """ read and store kwargs default values """
+        kwarg_values = inspect.getargspec(self._fct).defaults
+        if kwargs and kwarg_values:
+            kwarg_names = (inspect.getargspec(self._fct)
+                           .args[-len(kwarg_values):])
+            self._kwargs_default = {k: v for k, v in
+                                    zip(kwarg_names, kwarg_values)}
 
     def _process_outputs(self, outputs):
         """ converter data passed to Output objects and store them """
@@ -352,20 +363,13 @@ class Graph:
             for item in items:
                 node = self._get_node(item)
                 inputs = [i for i in node.inputs_without_constants]
-                kwarg_values = inspect.getargspec(node._fct).defaults
-
-                if node.kwargs and kwarg_values:
-                    kwarg_names = (inspect.getargspec(node._fct)
-                                   .args[-len(kwarg_values):])
-                    kwarg_defaults = {k: v for k, v
-                                      in zip(kwarg_names, kwarg_values)}
                 for inp in inputs:
                     if (not inp.is_kwarg or
                             (inp.is_kwarg and inp.map in self._data._inputs)):
                         node.set_value_to_input(inp.name, self._data[inp.map])
                     else:
                         node.set_value_to_input(inp.name,
-                                                kwarg_defaults[inp.name])
+                                                node._kwargs_default[inp.name])
 
             # running nodes
             if self._parallel:
