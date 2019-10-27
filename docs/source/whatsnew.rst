@@ -4,7 +4,12 @@
 What's New
 **********
 
-These are new features and improvements of note in each release.
+These are new features and improvements notes for each release.
+
+v0.8.1 (October 27, 2019)
+=========================
+
+* Allow optional input data for kwargs (`@veronicaguo <https://github.com/veronicaguo>`_)
 
 v0.8.0 (March 17, 2019)
 =======================
