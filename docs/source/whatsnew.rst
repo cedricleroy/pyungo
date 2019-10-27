@@ -34,7 +34,7 @@ v0.7.0 (February 10, 2019)
 
 * Run topological sort only when needed.
 
-* Everything accessible from `pyungo` __init__ (@nelsontodd)
+* Everything accessible from `pyungo` __init__ (`@nelsontodd <https://github.com/nelsontodd>`_)
 
 * Docstrings / Sphinx doc / GitHub page
 
