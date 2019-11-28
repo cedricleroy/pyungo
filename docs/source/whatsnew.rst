@@ -6,6 +6,11 @@ What's New
 
 These are new features and improvements notes for each release.
 
+v0.9.0 (TBD)
+=========================
+
+* Drop support / compatibility for Python 2.7.
+
 v0.8.1 (October 27, 2019)
 =========================
 
