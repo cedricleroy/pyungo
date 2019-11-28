@@ -1,8 +1,7 @@
-.. image:: https://circleci.com/gh/cedricleroy/pyungo.svg?style=shield
-    :target: https://circleci.com/gh/cedricleroy/pyungo
-
 pyungo
 ======
+
+|pypi| |python-version| |build-status| |license|
 
 pyungo is a lightweight library to link a set of dependent
 functions together, and execute them in an ordered manner.
@@ -62,3 +61,16 @@ links
 * Documentation: https://cedricleroy.github.io/pyungo/
 * Releases: https://pypi.org/project/pyungo/
 * Tests: https://circleci.com/gh/cedricleroy/pyungo/
+
+
+.. |pypi| image:: https://img.shields.io/pypi/v/pyungo.svg
+    :target: https://pypi.org/project/pyungo/
+
+.. |build-status| image:: https://circleci.com/gh/cedricleroy/pyungo.svg?style=shield
+    :target: https://circleci.com/gh/cedricleroy/pyungo
+
+.. |python-version| image:: https://img.shields.io/badge/python-3.6+-blue.svg
+    :target: https://www.python.org/downloads/release/python-360/
+
+.. |license| image:: https://img.shields.io/github/license/cedricleroy/pyungo.svg
+    :target: https://github.com/cedricleroy/pyungo/blob/master/LICENSE.txt
