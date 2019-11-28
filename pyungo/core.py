@@ -8,6 +8,7 @@ import inspect
 
 from pyungo.io import Input, Output, get_if_exists
 from pyungo.errors import PyungoError
+from pyungo.utils import get_function_return_names
 from pyungo.data import Data
 
 
@@ -136,6 +137,9 @@ class Node:
 
     def _process_inputs(self, inputs, is_arg=False, is_kwarg=False):
         """ converter data passed to Input objects and store them """
+        # if inputs are None, we inspect the function signature
+        if inputs is None:
+            inputs = list(inspect.signature(self._fct).parameters.keys())
         for input_ in inputs:
             if isinstance(input_, Input):
                 new_input = input_
@@ -170,6 +174,8 @@ class Node:
 
     def _process_outputs(self, outputs):
         """ converter data passed to Output objects and store them """
+        if outputs is None:
+            outputs = get_function_return_names(self._fct)
         for output in outputs:
             if isinstance(output, Output):
                 new_output = output
@@ -278,13 +284,9 @@ class Graph:
         return (node.id, node.run_with_loaded_inputs())
 
     def _register(self, f, **kwargs):
-        """ check if all needed inputs are there and create a new node """
+        """ get provided inputs if anmy and create a new node """
         inputs = kwargs.get('inputs')
-        if not inputs:
-            raise PyungoError('Missing inputs parameter')
         outputs = kwargs.get('outputs')
-        if not outputs:
-            raise PyungoError('Missing outputs parameters')
         args_names = kwargs.get('args')
         kwargs_names = kwargs.get('kwargs')
         self._create_node(

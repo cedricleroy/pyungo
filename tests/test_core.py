@@ -232,22 +232,6 @@ def test_dag_pretty_print():
         assert dag[i][0].fct_name == fct_name
 
 
-def test_missing_inputs():
-
-    graph = Graph(parallel=True)
-
-    def f_my_function(a, b):
-        return a + b
-
-    with pytest.raises(PyungoError) as err:
-        graph.add_node(f_my_function, outputs=['c'])
-    assert "Missing inputs parameter" in str(err.value)
-
-    with pytest.raises(PyungoError) as err:
-        graph.add_node(f_my_function, inputs=['a', 'b'])
-    assert "Missing outputs parameter" in str(err.value)
-
-
 def test_passing_data_to_node_definition():
 
     graph = Graph()
@@ -452,3 +436,46 @@ def test_optional_kwargs():
 
     assert res == 3
     assert graph.data['c'] == 3
+
+
+def test_no_explicit_inputs_outputs_simple():
+    graph = Graph()
+
+    @graph.register()
+    def f(a, b):
+        c = a + b
+        return c
+
+    res = graph.calculate(data={'a': 1, 'b': 2})
+
+    assert res == 3
+    assert graph.data['c'] == 3
+
+
+def test_no_explicit_inputs_outputs_tuple():
+    graph = Graph()
+
+    @graph.register()
+    def f(a, b, c, d):
+        e = a + b
+        f = c - d
+        return e, f
+
+    res = graph.calculate(data={'a': 1, 'b': 2, 'c': 3, 'd': 4})
+
+    assert res == (3, -1)
+    assert graph.data['e'] == 3
+    assert graph.data['f'] == -1
+
+
+def test_no_explicit_inputs_outputs_bad_return():
+    graph = Graph()
+
+    with pytest.raises(PyungoError) as err:
+        @graph.register()
+        def f(a, b):
+            return a + b
+
+    expected = ('Variable name or Tuple of variable '
+                'names are expected, got BinOp')
+    assert str(err.value) == expected

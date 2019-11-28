@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>Features &#8212; pyungo v0.7.0 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -57,10 +55,10 @@
 <li class="toctree-l1"><a class="reference internal" href="gettingstarted.html">Getting Started</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Features</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#sanity-check">Sanity Check</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#add-a-node-explicitely">Add a <code class="docutils literal notranslate"><span class="pre">Node</span></code> explicitely</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#add-a-node-explicitely">Add a <code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code> explicitely</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#parallelism">Parallelism</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#args-kwargs-constants">Args, Kwargs, Constants</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#input-and-output-objects"><code class="docutils literal notranslate"><span class="pre">Input</span></code> and <code class="docutils literal notranslate"><span class="pre">Output</span></code> objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#input-and-output-objects"><code class="xref py py-class docutils literal notranslate"><span class="pre">Input</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">Output</span></code> objects</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#schema">Schema</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#name-mapping">Name mapping</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#contracts">Contracts</a></li>
@@ -80,13 +78,11 @@
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -113,18 +109,18 @@
 <h2>Sanity Check<a class="headerlink" href="#sanity-check" title="Permalink to this headline">¶</a></h2>
 <p><strong>pyungo</strong> will raise an error in the following situations:</p>
 <ul class="simple">
-<li>Circular dependencies: The <a class="reference internal" href="developer.html#pyungo.core.Graph" title="pyungo.core.Graph"><code class="xref py py-class docutils literal notranslate"><span class="pre">Graph</span></code></a> need to be finite and cannot form a loop.</li>
-<li>All inputs needed to run a <a class="reference internal" href="developer.html#pyungo.core.Graph" title="pyungo.core.Graph"><code class="xref py py-class docutils literal notranslate"><span class="pre">Graph</span></code></a> are not provided.</li>
-<li>Input collision: An input name provided as data in the <a class="reference internal" href="developer.html#pyungo.core.Graph" title="pyungo.core.Graph"><code class="xref py py-class docutils literal notranslate"><span class="pre">Graph</span></code></a> has a
-conflict with at least of the output name.</li>
-<li>Duplicated outputs: Several nodes are giving output(s) that have the same name.</li>
+<li><p>Circular dependencies: The <a class="reference internal" href="developer.html#pyungo.core.Graph" title="pyungo.core.Graph"><code class="xref py py-class docutils literal notranslate"><span class="pre">Graph</span></code></a> need to be finite and cannot form a loop.</p></li>
+<li><p>All inputs needed to run a <a class="reference internal" href="developer.html#pyungo.core.Graph" title="pyungo.core.Graph"><code class="xref py py-class docutils literal notranslate"><span class="pre">Graph</span></code></a> are not provided.</p></li>
+<li><p>Input collision: An input name provided as data in the <a class="reference internal" href="developer.html#pyungo.core.Graph" title="pyungo.core.Graph"><code class="xref py py-class docutils literal notranslate"><span class="pre">Graph</span></code></a> has a
+conflict with at least of the output name.</p></li>
+<li><p>Duplicated outputs: Several nodes are giving output(s) that have the same name.</p></li>
 </ul>
 </div>
 <div class="section" id="add-a-node-explicitely">
 <h2>Add a <a class="reference internal" href="developer.html#pyungo.core.Node" title="pyungo.core.Node"><code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></a> explicitely<a class="headerlink" href="#add-a-node-explicitely" title="Permalink to this headline">¶</a></h2>
 <p>While the simple example register nodes at import time with a decorator, it is possible to
 explicitely add a node a runtime. Here is the same example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">formulas</span> <span class="k">import</span> <span class="n">f_my_function_1</span><span class="p">,</span> <span class="n">f_my_function_2</span><span class="p">,</span> <span class="n">f_my_function_3</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">formulas</span> <span class="kn">import</span> <span class="n">f_my_function_1</span><span class="p">,</span> <span class="n">f_my_function_2</span><span class="p">,</span> <span class="n">f_my_function_3</span>
 
 <span class="n">graph</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">()</span>
 
@@ -154,8 +150,8 @@ calculations in parralel:</p>
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Running functions in parallel has a cost. Python will spend time creating / deleting
+<p class="admonition-title">Note</p>
+<p>Running functions in parallel has a cost. Python will spend time creating / deleting
 new processes. Parallelism is recommended when at least 2 concurrent nodes have heavy
 calculations which takes a significant amount of time.</p>
 </div>
@@ -186,7 +182,7 @@ it is possible to define which data will be passed to them:</p>
 <p>Inputs and outputs can be defined directly with their names, or with <a class="reference internal" href="developer.html#pyungo.io.Input" title="pyungo.io.Input"><code class="xref py py-class docutils literal notranslate"><span class="pre">Input</span></code></a>
 / <a class="reference internal" href="developer.html#pyungo.io.Output" title="pyungo.io.Output"><code class="xref py py-class docutils literal notranslate"><span class="pre">Output</span></code></a> objects. This come in handy when there is extra behavior to be
 attached to an input / output (e.g. <code class="docutils literal notranslate"><span class="pre">Contracts</span></code>).</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyungo.io</span> <span class="k">import</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Output</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyungo.io</span> <span class="kn">import</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Output</span>
 
 <span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span>
     <span class="n">my_function</span><span class="p">,</span>
@@ -198,7 +194,7 @@ attached to an input / output (e.g. <code class="docutils literal notranslate"><
 <p>Often, inputs are used multiple times across the nodes. In those cases, it is better to define
 inputs only once (with their special features if any). It is possible to pass a list of
 <a class="reference internal" href="developer.html#pyungo.io.Input" title="pyungo.io.Input"><code class="xref py py-class docutils literal notranslate"><span class="pre">Input</span></code></a> / <a class="reference internal" href="developer.html#pyungo.io.Output" title="pyungo.io.Output"><code class="xref py py-class docutils literal notranslate"><span class="pre">Output</span></code></a> objects a <a class="reference internal" href="developer.html#pyungo.core.Graph" title="pyungo.core.Graph"><code class="xref py py-class docutils literal notranslate"><span class="pre">Graph</span></code></a>:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyungo.io</span> <span class="k">import</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Output</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyungo.io</span> <span class="kn">import</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Output</span>
 
 <span class="n">inputs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Input</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">),</span> <span class="n">Input</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">)]</span>
 <span class="n">outputs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Output</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;c&#39;</span><span class="p">),</span> <span class="n">Output</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;d&#39;</span><span class="p">)]</span>
@@ -219,8 +215,8 @@ inputs only once (with their special features if any). It is possible to pass a 
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">If inputs / outputs are explicitely provided to a graph, inputs / outputs defined
+<p class="admonition-title">Note</p>
+<p>If inputs / outputs are explicitely provided to a graph, inputs / outputs defined
 in the nodes can only be strings.</p>
 </div>
 </div>
@@ -278,7 +274,7 @@ formulas. pyungo makes things easy providing a mapping feature. Here is an examp
 <p>Sometimes we want to make sure a value meet specific criteria before moving forward.
 <strong>pyungo</strong> uses <a class="reference external" href="https://andreacensi.github.io/contracts/">pycontracts</a> for attaching
 contracts to inputs or outputs.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyungo.io</span> <span class="k">import</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Output</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pyungo.io</span> <span class="kn">import</span> <span class="n">Input</span><span class="p">,</span> <span class="n">Output</span>
 
 <span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span>
     <span class="n">my_function</span><span class="p">,</span>
@@ -301,7 +297,7 @@ contracts to inputs or outputs.</p>
       &copy;2019, Cedric Leroy.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.4</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

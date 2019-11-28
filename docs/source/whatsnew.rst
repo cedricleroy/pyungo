@@ -10,6 +10,12 @@ v0.9.0 (TBD)
 =========================
 
 * Drop support / compatibility for Python 2.7.
+* inputs / outputs names are now optional.::
+
+    @graph.register()
+    def f_my_function(a, b):
+        c = a + b
+        return c
 
 v0.8.1 (October 27, 2019)
 =========================

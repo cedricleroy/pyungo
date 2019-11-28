@@ -28,17 +28,20 @@ simple example
 
     graph = Graph()
 
-    @graph.register(inputs=['d', 'a'], outputs=['e'])
+    @graph.register()
     def f_my_function_2(d, a):
-        return d - a
+        e = d - a
+        return e
 
-    @graph.register(inputs=['c'], outputs=['d'])
+    @graph.register()
     def f_my_function_1(c):
-        return c / 10.
+        d = c / 10
+        return d
 
-    @graph.register(inputs=['a', 'b'], outputs=['c'])
+    @graph.register()
     def f_my_function_3(a, b):
-        return a + b
+        c = a + b
+        return c
 
     res = graph.calculate(data={'a': 2, 'b': 3})
     print(res)

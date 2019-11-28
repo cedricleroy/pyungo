@@ -21,17 +21,19 @@ Simple example
 
     graph = Graph()
 
-    @graph.register(inputs=['d', 'a'], outputs=['e'])
+    @graph.register()
     def f_my_function_2(d, a):
-        return d - a
+        e = d - a
+        return e
 
-    @graph.register(inputs=['c'], outputs=['d'])
+    @graph.register(outputs=['d'])
     def f_my_function_1(c):
         return c / 10.
 
-    @graph.register(inputs=['a', 'b'], outputs=['c'])
+    @graph.register()
     def f_my_function_3(a, b):
-        return a + b
+        c = a + b
+        return c
 
     res = graph.calculate(data={'a': 2, 'b': 3})
     print(res)
@@ -46,3 +48,9 @@ the output of the last function being run (``e``), but all intermediate results 
 available in the graph instance.
 
 The result will be `(a + b) / 10 - a = -1.5`
+
+.. note::
+    In the above example, most of the inputs / outputs are not explicitely defined when
+    registering. **pyungo** inspects the function signature to get the names and extract the
+    returned variable names automatically. For ``f_my_function_1``, there is no returned
+    variable, so the output name needs to be explicitely provided.
