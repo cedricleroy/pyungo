@@ -1,11 +1,9 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
     <title>What’s New &#8212; pyungo v0.7.0 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -57,6 +55,7 @@
 <li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Documentation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">What’s New</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#v0-9-0-tbd">v0.9.0 (TBD)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v0-8-1-october-27-2019">v0.8.1 (October 27, 2019)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v0-8-0-march-17-2019">v0.8.0 (March 17, 2019)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v0-7-0-february-10-2019">v0.7.0 (February 10, 2019)</a></li>
@@ -77,13 +76,11 @@
 </ul>
 </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
@@ -107,27 +104,40 @@
   <div class="section" id="what-s-new">
 <h1>What’s New<a class="headerlink" href="#what-s-new" title="Permalink to this headline">¶</a></h1>
 <p>These are new features and improvements notes for each release.</p>
+<div class="section" id="v0-9-0-tbd">
+<h2>v0.9.0 (TBD)<a class="headerlink" href="#v0-9-0-tbd" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p>Drop support / compatibility for Python 2.7.</p></li>
+<li><p>inputs / outputs names are now optional.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@graph</span><span class="o">.</span><span class="n">register</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">f_my_function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+    <span class="k">return</span> <span class="n">c</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</div>
 <div class="section" id="v0-8-1-october-27-2019">
 <h2>v0.8.1 (October 27, 2019)<a class="headerlink" href="#v0-8-1-october-27-2019" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>Allow optional input data for kwargs (<a class="reference external" href="https://github.com/veronicaguo">&#64;veronicaguo</a>)</li>
+<li><p>Allow optional input data for kwargs (<a class="reference external" href="https://github.com/veronicaguo">&#64;veronicaguo</a>)</p></li>
 </ul>
 </div>
 <div class="section" id="v0-8-0-march-17-2019">
 <h2>v0.8.0 (March 17, 2019)<a class="headerlink" href="#v0-8-0-march-17-2019" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li>Can pass list of <code class="docutils literal notranslate"><span class="pre">Input</span></code> / <code class="docutils literal notranslate"><span class="pre">Output</span></code> to <code class="docutils literal notranslate"><span class="pre">Graph</span></code>.</li>
-<li>Names mapping.</li>
-<li>Inputs validation with JSON Schema.</li>
-<li>Some misc. refactoring and styling.</li>
+<li><p>Can pass list of <code class="docutils literal notranslate"><span class="pre">Input</span></code> / <code class="docutils literal notranslate"><span class="pre">Output</span></code> to <code class="docutils literal notranslate"><span class="pre">Graph</span></code>.</p></li>
+<li><p>Names mapping.</p></li>
+<li><p>Inputs validation with JSON Schema.</p></li>
+<li><p>Some misc. refactoring and styling.</p></li>
 </ul>
 </div>
 <div class="section" id="v0-7-0-february-10-2019">
 <h2>v0.7.0 (February 10, 2019)<a class="headerlink" href="#v0-7-0-february-10-2019" title="Permalink to this headline">¶</a></h2>
 <ul>
-<li><p class="first">Refactoring, and introduction of <code class="docutils literal notranslate"><span class="pre">Input</span></code> and <code class="docutils literal notranslate"><span class="pre">Output</span></code> objects.</p>
-</li>
-<li><p class="first">Contracts feature.:</p>
+<li><p>Refactoring, and introduction of <code class="docutils literal notranslate"><span class="pre">Input</span></code> and <code class="docutils literal notranslate"><span class="pre">Output</span></code> objects.</p></li>
+<li><p>Contracts feature.:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span>
     <span class="n">my_function</span><span class="p">,</span>
     <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="n">Input</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">contract</span><span class="o">=</span><span class="s1">&#39;&gt;0&#39;</span><span class="p">),</span> <span class="n">Input</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">contract</span><span class="o">=</span><span class="s1">&#39;float&#39;</span><span class="p">)],</span>
@@ -136,23 +146,18 @@
 </pre></div>
 </div>
 </li>
-<li><p class="first">Nodes IDs refactoring (now uses uuid).</p>
-</li>
-<li><p class="first">Run topological sort only when needed.</p>
-</li>
-<li><p class="first">Everything accessible from <cite>pyungo</cite> __init__ (<a class="reference external" href="https://github.com/nelsontodd">&#64;nelsontodd</a>)</p>
-</li>
-<li><p class="first">Docstrings / Sphinx doc / GitHub page</p>
-</li>
+<li><p>Nodes IDs refactoring (now uses uuid).</p></li>
+<li><p>Run topological sort only when needed.</p></li>
+<li><p>Everything accessible from <cite>pyungo</cite> __init__ (<a class="reference external" href="https://github.com/nelsontodd">&#64;nelsontodd</a>)</p></li>
+<li><p>Docstrings / Sphinx doc / GitHub page</p></li>
 </ul>
 </div>
 <div class="section" id="v0-6-0-july-6-2018">
 <h2>v0.6.0 (July 6, 2018)<a class="headerlink" href="#v0-6-0-july-6-2018" title="Permalink to this headline">¶</a></h2>
 <ul>
-<li><p class="first">Fix “false parallelism” implementation. This require an optional dependency (<cite>multiprocess</cite>
-module) which is more friendly to work with stateful objects and multiprocessing.</p>
-</li>
-<li><p class="first">Ability to pass predefined inputs at the node definition:</p>
+<li><p>Fix “false parallelism” implementation. This require an optional dependency (<cite>multiprocess</cite>
+module) which is more friendly to work with stateful objects and multiprocessing.</p></li>
+<li><p>Ability to pass predefined inputs at the node definition:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@graph</span><span class="o">.</span><span class="n">register</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}],</span> <span class="n">outputs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">])</span>
 <span class="k">def</span> <span class="nf">f_my_function</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
     <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
@@ -164,24 +169,21 @@ module) which is more friendly to work with stateful objects and multiprocessing
 <div class="section" id="v0-5-0-april-3-2018">
 <h2>v0.5.0 (April 3, 2018)<a class="headerlink" href="#v0-5-0-april-3-2018" title="Permalink to this headline">¶</a></h2>
 <ul>
-<li><p class="first">Nodes can be run in parallel using Python multiprocessing module:</p>
+<li><p>Nodes can be run in parallel using Python multiprocessing module:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">graph</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">(</span><span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pool_size</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 </pre></div>
 </div>
 </li>
-<li><p class="first"><cite>inputs</cite> and <cite>outputs</cite> parameters are mandatory and will raise an explicit error when missing.</p>
-</li>
-<li><p class="first">Add a longer test using <cite>pvlib</cite></p>
-</li>
+<li><p><cite>inputs</cite> and <cite>outputs</cite> parameters are mandatory and will raise an explicit error when missing.</p></li>
+<li><p>Add a longer test using <cite>pvlib</cite></p></li>
 </ul>
 </div>
 <div class="section" id="v0-4-0-march-23-2018">
 <h2>v0.4.0 (March 23, 2018)<a class="headerlink" href="#v0-4-0-march-23-2018" title="Permalink to this headline">¶</a></h2>
 <ul>
-<li><p class="first">Fix single output when dealing with iterables. Previously, returning one output
-with an iterable was resulting in taking the first element.</p>
-</li>
-<li><p class="first">Args and kwargs can be used in functions:</p>
+<li><p>Fix single output when dealing with iterables. Previously, returning one output
+with an iterable was resulting in taking the first element.</p></li>
+<li><p>Args and kwargs can be used in functions:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@graph</span><span class="o">.</span><span class="n">register</span><span class="p">(</span>
         <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">],</span>
         <span class="n">args</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">],</span>
@@ -193,13 +195,12 @@ with an iterable was resulting in taking the first element.</p>
 </pre></div>
 </div>
 </li>
-<li><p class="first">Can create a Node without using the decorator:</p>
+<li><p>Can create a Node without using the decorator:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">graph</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">f_my_function</span><span class="p">,</span> <span class="n">inputs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">],</span> <span class="n">outputs</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 </li>
-<li><p class="first">DAG pretty print (<cite>graph.dag</cite>)</p>
-</li>
+<li><p>DAG pretty print (<cite>graph.dag</cite>)</p></li>
 </ul>
 </div>
 <div class="section" id="v0-3-0-march-18-2018">
@@ -219,7 +220,7 @@ with an iterable was resulting in taking the first element.</p>
       &copy;2019, Cedric Leroy.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.4</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.1</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
