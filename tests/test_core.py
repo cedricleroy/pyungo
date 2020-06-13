@@ -51,7 +51,7 @@ def test_simple_without_decorator():
     assert graph.data['e'] == -1.5
 
 
-def test_simple_parralel():
+def test_simple_parallel():
     """ TODO: We could mock and make sure things are called correctly """
 
     graph = Graph(parallel=True)
@@ -104,7 +104,7 @@ def test_same_output_names():
         @graph.register(inputs=['c'], outputs=['c'])
         def f_my_function2(c):
             return c / 10
-    
+
     assert 'c output already exist' in str(err.value)
 
 
@@ -117,7 +117,7 @@ def test_missing_input():
 
     with pytest.raises(PyungoError) as err:
         graph.calculate(data={'a': 6})
-    
+
     assert "The following inputs are needed: ['b']" in str(err.value)
 
 
@@ -130,7 +130,7 @@ def test_inputs_not_used():
 
     with pytest.raises(PyungoError) as err:
         graph.calculate(data={'a': 6, 'b': 4, 'e': 7})
-    
+
     assert "The following inputs are not used by the model: ['e']" in str(err.value)
 
 
@@ -143,7 +143,7 @@ def test_inputs_collision():
 
     with pytest.raises(PyungoError) as err:
         graph.calculate(data={'a': 6, 'b': 4, 'c': 7})
-    
+
     assert "The following inputs are already used in the model: ['c']" in str(err.value)
 
 
@@ -233,7 +233,6 @@ def test_dag_pretty_print():
 
 
 def test_passing_data_to_node_definition():
-
     graph = Graph()
 
     @graph.register(inputs=['a', {'b': 2}], outputs=['c'])
@@ -245,7 +244,6 @@ def test_passing_data_to_node_definition():
 
 
 def test_wrong_input_type():
-
     graph = Graph()
 
     with pytest.raises(PyungoError) as err:
@@ -257,7 +255,6 @@ def test_wrong_input_type():
 
 
 def test_empty_input_dict():
-
     graph = Graph()
 
     with pytest.raises(PyungoError) as err:
@@ -269,7 +266,6 @@ def test_empty_input_dict():
 
 
 def test_multiple_keys_input_dict():
-
     graph = Graph()
 
     with pytest.raises(PyungoError) as err:
@@ -296,7 +292,6 @@ def test_Input_type_input():
 
 
 def test_contract_inputs():
-
     from contracts import ContractNotRespected
 
     graph = Graph()
@@ -320,7 +315,6 @@ def test_contract_inputs():
 
 
 def test_contract_outputs():
-
     from contracts import ContractNotRespected
 
     graph = Graph()
@@ -342,7 +336,6 @@ def test_contract_outputs():
 
 
 def test_provide_inputs_outputs():
-
     inputs = [Input('a'), Input('b')]
     outputs = [Output('c')]
 
@@ -360,7 +353,6 @@ def test_provide_inputs_outputs():
 
 
 def test_provide_inputs_outputs_already_defined():
-
     inputs = [Input('a'), Input('b')]
     outputs = [Output('c')]
 
@@ -379,7 +371,6 @@ def test_provide_inputs_outputs_already_defined():
 
 
 def test_map():
-
     graph = Graph()
 
     @graph.register(
@@ -395,7 +386,6 @@ def test_map():
 
 
 def test_schema():
-
     from jsonschema import ValidationError
 
     schema = {
@@ -479,3 +469,51 @@ def test_no_explicit_inputs_outputs_bad_return():
     expected = ('Variable name or Tuple of variable '
                 'names are expected, got BinOp')
     assert str(err.value) == expected
+
+
+def test_no_deepcopy_doesnt_copy():
+    graph = Graph(do_deepcopy=False)
+
+    @graph.register()
+    def f(c, e):
+        c['a'] += 1
+        f = c['a'] + e
+        return f
+
+    d = {'a': 1}
+    res = graph.calculate(data={'c': d, 'e': 2})
+    assert res == 4
+    res = graph.calculate(data={'c': d, 'e': 2})
+    assert res == 5
+
+
+def test_no_side_effects_if_deepcopy_enabled():
+    graph = Graph(do_deepcopy=True)
+
+    @graph.register()
+    def f(c, e):
+        c['a'] += 1
+        f = c['a'] + e
+        return f
+
+    d = {'a': 1}
+    res = graph.calculate(data={'c': d, 'e': 2})
+    assert res == 4
+    res = graph.calculate(data={'c': d, 'e': 2})
+    assert res == 4
+
+
+def test_no_side_effects_if_deepcopy_is_left_at_default():
+    graph = Graph()
+
+    @graph.register()
+    def f(c, e):
+        c['a'] += 1
+        f = c['a'] + e
+        return f
+
+    d = {'a': 1}
+    res = graph.calculate(data={'c': d, 'e': 2})
+    assert res == 4
+    res = graph.calculate(data={'c': d, 'e': 2})
+    assert res == 4

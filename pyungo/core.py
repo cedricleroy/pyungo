@@ -17,7 +17,6 @@ LOGGER.setLevel(logging.INFO)
 
 COPY_TIME_MAX_PERCENTAGE = 0.05
 
-
 def topological_sort(data):
     """ Topological sort algorithm
 
@@ -219,6 +218,7 @@ class Graph:
         parallel (bool): Parallelism flag
         pool_size (int): Size of the pool in case parallelism is enabled
         schema (dict): Optional JSON schema to validate inputs data
+        do_deepcopy (bool): Enables the deep-copying of inputs in order to guarantee immutability
 
     Raises:
         ImportError will raise in case parallelism is chosen and `multiprocess`
@@ -415,13 +415,21 @@ class Graph:
         total_compute_time = t2 - t1
         LOGGER.info('Calculation finished in {}'.format(total_compute_time))
 
-        data_copy_perc = data_copy_time.total_seconds() / total_compute_time.total_seconds()
+        total_compute_time_seconds = total_compute_time.total_seconds()
+
+        if total_compute_time_seconds > 0:
+            data_copy_perc = data_copy_time.total_seconds() / total_compute_time.total_seconds()
+        else:
+            data_copy_perc = 0
 
         if data_copy_perc > COPY_TIME_MAX_PERCENTAGE:
-            LOGGER.warning(
+            msg = (
                 'Data copy time was {} that is {:.1f}% of a total time of {}. '
-                'Consider using do_deepcopy=False during the graph instantiation.'.format(data_copy_time,
-                                                                                          data_copy_perc * 100,
-                                                                                          total_compute_time))
+                'Consider using do_deepcopy=False during the graph instantiation.'
+            )
+
+            LOGGER.warning(
+                msg.format(data_copy_time, data_copy_perc * 100, total_compute_time)
+            )
 
         return res

@@ -8,3 +8,4 @@ venv*/
 .DS_Store
 docs/_build/
 .mypy_cache/
+.idea
