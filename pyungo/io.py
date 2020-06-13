@@ -25,7 +25,7 @@ class _IO(object):
             try:
                 from contracts.main import parse_contract_string
             except ImportError:
-                raise ImportError('pycontracts is needed to use contracts')
+                raise ImportError("pycontracts is needed to use contracts")
             self._contract = parse_contract_string(contract)
 
     @property
@@ -70,7 +70,7 @@ class Input(_IO):
         self.is_constant = False
 
     def __repr__(self):
-        return '<{} value={} is_arg: {} is_kwarg: {}>'.format(
+        return "<{} value={} is_arg: {} is_kwarg: {}>".format(
             self._name, self.value, self.is_arg, self.is_kwarg
         )
 
@@ -125,9 +125,7 @@ class Output(_IO):
     """
 
     def __repr__(self):
-        return '<{} value={}>'.format(
-            self._name, self.value
-        )
+        return "<{} value={}>".format(self._name, self.value)
 
 
 def get_if_exists(provided, existing):
@@ -147,8 +145,7 @@ def get_if_exists(provided, existing):
         exist = existing.get(name)
         if exist:
             if is_io:
-                msg = ('You cannot use Input / Output in a '
-                       'Node if already defined')
+                msg = "You cannot use Input / Output in a " "Node if already defined"
                 raise TypeError(msg)
             res.append(exist)
         else:

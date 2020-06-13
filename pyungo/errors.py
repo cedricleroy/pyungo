@@ -3,4 +3,5 @@
 
 class PyungoError(Exception):
     """ pyungo custom exception """
+
     pass

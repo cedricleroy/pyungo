@@ -17,6 +17,7 @@ LOGGER.setLevel(logging.INFO)
 
 COPY_TIME_MAX_PERCENTAGE = 0.05
 
+
 def topological_sort(data):
     """ Topological sort algorithm
 
@@ -45,10 +46,11 @@ def topological_sort(data):
         if not ordered:
             break
         yield sorted(ordered)
-        data = {item: (dep - ordered) for item, dep in data.items()
-                if item not in ordered}
+        data = {
+            item: (dep - ordered) for item, dep in data.items() if item not in ordered
+        }
     if data:
-        raise PyungoError('A cyclic dependency exists amongst {}'.format(data))
+        raise PyungoError("A cyclic dependency exists amongst {}".format(data))
 
 
 class Node:
@@ -80,9 +82,8 @@ class Node:
         self._process_outputs(outputs)
 
     def __repr__(self):
-        return 'Node({}, <{}>, {}, {})'.format(
-            self._id, self._fct.__name__,
-            self.input_names, self.output_names
+        return "Node({}, <{}>, {}, {})".format(
+            self._id, self._fct.__name__, self.input_names, self.output_names
         )
 
     def __call__(self, *args, **kwargs):
@@ -90,7 +91,7 @@ class Node:
         t1 = dt.datetime.utcnow()
         res = self._fct(*args, **kwargs)
         t2 = dt.datetime.utcnow()
-        LOGGER.info('Ran {} in {}'.format(self, t2 - t1))
+        LOGGER.info("Ran {} in {}".format(self, t2 - t1))
         # save results to outputs
         if len(self._outputs) == 1:
             self._outputs[0].value = res
@@ -152,14 +153,13 @@ class Node:
                     new_input = Input(input_)
             elif isinstance(input_, dict):
                 if len(input_) != 1:
-                    msg = ('dict inputs should have only one key '
-                           'and cannot be empty')
+                    msg = "dict inputs should have only one key " "and cannot be empty"
                     raise PyungoError(msg)
                 key = next(iter(input_))
                 value = input_[key]
                 new_input = Input.constant(key, value)
             else:
-                msg = 'inputs need to be of type Input, str or dict'
+                msg = "inputs need to be of type Input, str or dict"
                 raise PyungoError(msg)
             self._inputs.append(new_input)
 
@@ -167,10 +167,8 @@ class Node:
         """ read and store kwargs default values """
         kwarg_values = inspect.getargspec(self._fct).defaults
         if kwargs and kwarg_values:
-            kwarg_names = (inspect.getargspec(self._fct)
-                               .args[-len(kwarg_values):])
-            self._kwargs_default = {k: v for k, v in
-                                    zip(kwarg_names, kwarg_values)}
+            kwarg_names = inspect.getargspec(self._fct).args[-len(kwarg_values) :]
+            self._kwargs_default = {k: v for k, v in zip(kwarg_names, kwarg_values)}
 
     def _process_outputs(self, outputs):
         """ converter data passed to Output objects and store them """
@@ -202,8 +200,7 @@ class Node:
 
     def run_with_loaded_inputs(self):
         """ Run the node with the attached function and loaded input values """
-        args = [i.value for i in self._inputs
-                if not i.is_arg and not i.is_kwarg]
+        args = [i.value for i in self._inputs if not i.is_arg and not i.is_kwarg]
         args.extend([i.value for i in self._inputs if i.is_arg])
         kwargs = {i.name: i.value for i in self._inputs if i.is_kwarg}
         return self(*args, **kwargs)
@@ -218,15 +215,23 @@ class Graph:
         parallel (bool): Parallelism flag
         pool_size (int): Size of the pool in case parallelism is enabled
         schema (dict): Optional JSON schema to validate inputs data
-        do_deepcopy (bool): Enables the deep-copying of inputs in order to guarantee immutability
+        do_deepcopy (bool): Enables the deep-copying of inputs in order to guarantee
+            immutability
 
     Raises:
         ImportError will raise in case parallelism is chosen and `multiprocess`
             not installed
     """
 
-    def __init__(self, inputs=None, outputs=None, parallel=False, pool_size=2,
-                 schema=None, do_deepcopy=True):
+    def __init__(
+        self,
+        inputs=None,
+        outputs=None,
+        parallel=False,
+        pool_size=2,
+        schema=None,
+        do_deepcopy=True,
+    ):
         self._nodes = {}
         self._data = None
         self._parallel = parallel
@@ -247,8 +252,9 @@ class Graph:
         """ return input names (mapped) of every nodes """
         inputs = []
         for node in self._nodes.values():
-            inputs.extend([i.map for i in node.inputs_without_constants
-                           if not i.is_kwarg])
+            inputs.extend(
+                [i.map for i in node.inputs_without_constants if not i.is_kwarg]
+            )
         return inputs
 
     @property
@@ -288,13 +294,11 @@ class Graph:
 
     def _register(self, f, **kwargs):
         """ get provided inputs if anmy and create a new node """
-        inputs = kwargs.get('inputs')
-        outputs = kwargs.get('outputs')
-        args_names = kwargs.get('args')
-        kwargs_names = kwargs.get('kwargs')
-        self._create_node(
-            f, inputs, outputs, args_names, kwargs_names
-        )
+        inputs = kwargs.get("inputs")
+        outputs = kwargs.get("outputs")
+        args_names = kwargs.get("args")
+        kwargs_names = kwargs.get("kwargs")
+        self._create_node(f, inputs, outputs, args_names, kwargs_names)
 
     def register(self, **kwargs):
         """ register decorator """
@@ -326,7 +330,7 @@ class Graph:
         for n in self._nodes.values():
             for out_name in n.output_names:
                 if out_name in node.output_names:
-                    msg = '{} output already exist'.format(out_name)
+                    msg = "{} output already exist".format(out_name)
                     raise PyungoError(msg)
         self._nodes[node.id] = node
 
@@ -356,11 +360,11 @@ class Graph:
             try:
                 import jsonschema
             except ImportError:
-                msg = 'jsonschema package is needed for validating data'
+                msg = "jsonschema package is needed for validating data"
                 raise ImportError(msg)
             jsonschema.validate(instance=data, schema=self._schema)
         t1 = dt.datetime.utcnow()
-        LOGGER.info('Starting calculation...')
+        LOGGER.info("Starting calculation...")
         dt1 = dt.datetime.utcnow()
         self._data = Data(data, do_deepcopy=self._do_deepcopy)
         dt2 = dt.datetime.utcnow()
@@ -374,25 +378,24 @@ class Graph:
                 node = self._get_node(item)
                 inputs = [i for i in node.inputs_without_constants]
                 for inp in inputs:
-                    if (not inp.is_kwarg or
-                            (inp.is_kwarg and inp.map in self._data._inputs)):
+                    if not inp.is_kwarg or (
+                        inp.is_kwarg and inp.map in self._data._inputs
+                    ):
                         node.set_value_to_input(inp.name, self._data[inp.map])
                     else:
-                        node.set_value_to_input(inp.name,
-                                                node._kwargs_default[inp.name])
+                        node.set_value_to_input(
+                            inp.name, node._kwargs_default[inp.name]
+                        )
 
             # running nodes
             if self._parallel:
                 try:
                     from multiprocess import Pool
                 except ImportError:
-                    msg = 'multiprocess package is needed for parralelism'
+                    msg = "multiprocess package is needed for parralelism"
                     raise ImportError(msg)
                 pool = Pool(self._pool_size)
-                results = pool.map(
-                    Graph.run_node,
-                    [self._get_node(i) for i in items]
-                )
+                results = pool.map(Graph.run_node, [self._get_node(i) for i in items])
                 pool.close()
                 pool.join()
                 results = {k: v for k, v in results}
@@ -413,19 +416,21 @@ class Graph:
                         self._data[out.map] = res[i]
         t2 = dt.datetime.utcnow()
         total_compute_time = t2 - t1
-        LOGGER.info('Calculation finished in {}'.format(total_compute_time))
+        LOGGER.info("Calculation finished in {}".format(total_compute_time))
 
         total_compute_time_seconds = total_compute_time.total_seconds()
 
         if total_compute_time_seconds > 0:
-            data_copy_perc = data_copy_time.total_seconds() / total_compute_time.total_seconds()
+            data_copy_perc = (
+                data_copy_time.total_seconds() / total_compute_time.total_seconds()
+            )
         else:
             data_copy_perc = 0
 
         if data_copy_perc > COPY_TIME_MAX_PERCENTAGE:
             msg = (
-                'Data copy time was {} that is {:.1f}% of a total time of {}. '
-                'Consider using do_deepcopy=False during the graph instantiation.'
+                "Data copy time was {} that is {:.1f}% of a total time of {}. "
+                "Consider using do_deepcopy=False during the graph instantiation."
             )
 
             LOGGER.warning(
