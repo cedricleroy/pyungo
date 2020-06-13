@@ -1,7 +1,7 @@
 import ast
 import inspect
 
-from pyungo.errors import PyungoError
+from .errors import PyungoError
 
 
 def get_function_return_names(fct):

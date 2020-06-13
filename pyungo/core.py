@@ -6,15 +6,16 @@ from functools import reduce
 import logging
 import inspect
 
-from pyungo.io import Input, Output, get_if_exists
-from pyungo.errors import PyungoError
-from pyungo.utils import get_function_return_names
-from pyungo.data import Data
-
+from .io import Input, Output, get_if_exists
+from .errors import PyungoError
+from .utils import get_function_return_names
+from .data import Data
 
 logging.basicConfig()
 LOGGER = logging.getLogger()
 LOGGER.setLevel(logging.INFO)
+
+COPY_TIME_MAX_PERCENTAGE = 0.05
 
 
 def topological_sort(data):
@@ -90,7 +91,7 @@ class Node:
         t1 = dt.datetime.utcnow()
         res = self._fct(*args, **kwargs)
         t2 = dt.datetime.utcnow()
-        LOGGER.info('Ran {} in {}'.format(self, t2-t1))
+        LOGGER.info('Ran {} in {}'.format(self, t2 - t1))
         # save results to outputs
         if len(self._outputs) == 1:
             self._outputs[0].value = res
@@ -168,7 +169,7 @@ class Node:
         kwarg_values = inspect.getargspec(self._fct).defaults
         if kwargs and kwarg_values:
             kwarg_names = (inspect.getargspec(self._fct)
-                           .args[-len(kwarg_values):])
+                               .args[-len(kwarg_values):])
             self._kwargs_default = {k: v for k, v in
                                     zip(kwarg_names, kwarg_values)}
 
@@ -223,8 +224,9 @@ class Graph:
         ImportError will raise in case parallelism is chosen and `multiprocess`
             not installed
     """
+
     def __init__(self, inputs=None, outputs=None, parallel=False, pool_size=2,
-                 schema=None):
+                 schema=None, do_deepcopy=True):
         self._nodes = {}
         self._data = None
         self._parallel = parallel
@@ -233,6 +235,7 @@ class Graph:
         self._sorted_dep = None
         self._inputs = {i.name: i for i in inputs} if inputs else None
         self._outputs = {o.name: o for o in outputs} if outputs else None
+        self._do_deepcopy = do_deepcopy
 
     @property
     def data(self):
@@ -295,9 +298,11 @@ class Graph:
 
     def register(self, **kwargs):
         """ register decorator """
+
         def decorator(f):
             self._register(f, **kwargs)
             return f
+
         return decorator
 
     def add_node(self, function, **kwargs):
@@ -356,7 +361,10 @@ class Graph:
             jsonschema.validate(instance=data, schema=self._schema)
         t1 = dt.datetime.utcnow()
         LOGGER.info('Starting calculation...')
-        self._data = Data(data)
+        dt1 = dt.datetime.utcnow()
+        self._data = Data(data, do_deepcopy=self._do_deepcopy)
+        dt2 = dt.datetime.utcnow()
+        data_copy_time = dt2 - dt1
         self._data.check_inputs(self.sim_inputs, self.sim_outputs, self.sim_kwargs)
         if not self._sorted_dep:
             self._topological_sort()
@@ -404,5 +412,16 @@ class Graph:
                     for i, out in enumerate(node.outputs):
                         self._data[out.map] = res[i]
         t2 = dt.datetime.utcnow()
-        LOGGER.info('Calculation finished in {}'.format(t2-t1))
+        total_compute_time = t2 - t1
+        LOGGER.info('Calculation finished in {}'.format(total_compute_time))
+
+        data_copy_perc = data_copy_time.total_seconds() / total_compute_time.total_seconds()
+
+        if data_copy_perc > COPY_TIME_MAX_PERCENTAGE:
+            LOGGER.warning(
+                'Data copy time was {} that is {:.1f}% of a total time of {}. '
+                'Consider using do_deepcopy=False during the graph instantiation.'.format(data_copy_time,
+                                                                                          data_copy_perc * 100,
+                                                                                          total_compute_time))
+
         return res
