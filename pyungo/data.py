@@ -1,12 +1,15 @@
 """ class abstracting data passed as inputs and saved as outputs """
 from copy import deepcopy
 
-from pyungo.errors import PyungoError
+from .errors import PyungoError
 
 
 class Data:
-    def __init__(self, inputs):
-        self._inputs = deepcopy(inputs)
+    def __init__(self, inputs, do_deepcopy=True):
+        if do_deepcopy:
+            self._inputs = deepcopy(inputs)
+        else:
+            self._inputs = inputs
         self._outputs = {}
 
     @property
