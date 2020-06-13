@@ -6,8 +6,8 @@ What's New
 
 These are new features and improvements notes for each release.
 
-v0.9.0 (TBD)
-=========================
+v0.9.0 (June 13, 2020)
+======================
 
 * Drop support / compatibility for Python 2.7.
 * inputs / outputs names are now optional.::
@@ -16,6 +16,10 @@ v0.9.0 (TBD)
     def f_my_function(a, b):
         c = a + b
         return c
+
+* Additional argument to ``Graph`` to prevent inputs deepcopy (`@Tosa95 <https://github.com/Tosa95>`_).
+  This is useful when having large inputs when the ``deepcopy`` might be slow, but remove inputs 
+  immutability.
 
 v0.8.1 (October 27, 2019)
 =========================

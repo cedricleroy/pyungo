@@ -1,17 +1,18 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Developer Documentation &#8212; pyungo v0.7.0 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="What’s New" href="whatsnew.html" />
@@ -76,7 +77,7 @@
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -95,9 +96,9 @@
             
   <div class="section" id="developer-documentation">
 <h1>Developer Documentation<a class="headerlink" href="#developer-documentation" title="Permalink to this headline">¶</a></h1>
-<dl class="function">
+<dl class="py function">
 <dt id="pyungo.core.topological_sort">
-<code class="sig-prename descclassname">pyungo.core.</code><code class="sig-name descname">topological_sort</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.core.topological_sort" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">pyungo.core.</code><code class="sig-name descname">topological_sort</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.core.topological_sort" title="Permalink to this definition">¶</a></dt>
 <dd><p>Topological sort algorithm</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -123,9 +124,9 @@ The nested lists are node ids that can be run in parallel</p>
 </dl>
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pyungo.core.Node">
-<em class="property">class </em><code class="sig-prename descclassname">pyungo.core.</code><code class="sig-name descname">Node</code><span class="sig-paren">(</span><em class="sig-param">fct</em>, <em class="sig-param">inputs</em>, <em class="sig-param">outputs</em>, <em class="sig-param">args=None</em>, <em class="sig-param">kwargs=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.core.Node" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pyungo.core.</code><code class="sig-name descname">Node</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fct</span></em>, <em class="sig-param"><span class="n">inputs</span></em>, <em class="sig-param"><span class="n">outputs</span></em>, <em class="sig-param"><span class="n">args</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kwargs</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.core.Node" title="Permalink to this definition">¶</a></dt>
 <dd><p>Node object (aka vertex in graph theory)</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -143,9 +144,9 @@ The nested lists are node ids that can be run in parallel</p>
 </dl>
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pyungo.core.Graph">
-<em class="property">class </em><code class="sig-prename descclassname">pyungo.core.</code><code class="sig-name descname">Graph</code><span class="sig-paren">(</span><em class="sig-param">inputs=None</em>, <em class="sig-param">outputs=None</em>, <em class="sig-param">parallel=False</em>, <em class="sig-param">pool_size=2</em>, <em class="sig-param">schema=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.core.Graph" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pyungo.core.</code><code class="sig-name descname">Graph</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">outputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">parallel</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">pool_size</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">schema</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.core.Graph" title="Permalink to this definition">¶</a></dt>
 <dd><p>Graph object, collection of related nodes</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -161,9 +162,9 @@ The nested lists are node ids that can be run in parallel</p>
 <dd class="field-even"><p><strong>ImportError will raise in case parallelism is chosen and multiprocess</strong> – not installed</p>
 </dd>
 </dl>
-<dl class="method">
+<dl class="py method">
 <dt id="pyungo.core.Graph.add_node">
-<code class="sig-name descname">add_node</code><span class="sig-paren">(</span><em class="sig-param">function</em>, <em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.core.Graph.add_node" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">add_node</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">function</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.core.Graph.add_node" title="Permalink to this definition">¶</a></dt>
 <dd><p>explicit method to add a node to the graph</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -178,33 +179,33 @@ The nested lists are node ids that can be run in parallel</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyungo.core.Graph.calculate">
-<code class="sig-name descname">calculate</code><span class="sig-paren">(</span><em class="sig-param">data</em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.core.Graph.calculate" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">calculate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.core.Graph.calculate" title="Permalink to this definition">¶</a></dt>
 <dd><p>run graph calculations</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyungo.core.Graph.dag">
 <em class="property">property </em><code class="sig-name descname">dag</code><a class="headerlink" href="#pyungo.core.Graph.dag" title="Permalink to this definition">¶</a></dt>
 <dd><p>return the ordered nodes graph</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyungo.core.Graph.data">
 <em class="property">property </em><code class="sig-name descname">data</code><a class="headerlink" href="#pyungo.core.Graph.data" title="Permalink to this definition">¶</a></dt>
 <dd><p>return the data of the graph (inputs + outputs)</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyungo.core.Graph.register">
-<code class="sig-name descname">register</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.core.Graph.register" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">register</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.core.Graph.register" title="Permalink to this definition">¶</a></dt>
 <dd><p>register decorator</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyungo.core.Graph.run_node">
-<em class="property">static </em><code class="sig-name descname">run_node</code><span class="sig-paren">(</span><em class="sig-param">node</em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.core.Graph.run_node" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">run_node</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.core.Graph.run_node" title="Permalink to this definition">¶</a></dt>
 <dd><p>run the node</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -219,19 +220,19 @@ The nested lists are node ids that can be run in parallel</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyungo.core.Graph.sim_inputs">
 <em class="property">property </em><code class="sig-name descname">sim_inputs</code><a class="headerlink" href="#pyungo.core.Graph.sim_inputs" title="Permalink to this definition">¶</a></dt>
 <dd><p>return input names (mapped) of every nodes</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyungo.core.Graph.sim_kwargs">
 <em class="property">property </em><code class="sig-name descname">sim_kwargs</code><a class="headerlink" href="#pyungo.core.Graph.sim_kwargs" title="Permalink to this definition">¶</a></dt>
 <dd><p>return kwarg names (mapped) of every nodes</p>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pyungo.core.Graph.sim_outputs">
 <em class="property">property </em><code class="sig-name descname">sim_outputs</code><a class="headerlink" href="#pyungo.core.Graph.sim_outputs" title="Permalink to this definition">¶</a></dt>
 <dd><p>return output names (mapped) of every nodes</p>
@@ -239,9 +240,9 @@ The nested lists are node ids that can be run in parallel</p>
 
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pyungo.io.Input">
-<em class="property">class </em><code class="sig-prename descclassname">pyungo.io.</code><code class="sig-name descname">Input</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">map=None</em>, <em class="sig-param">meta=None</em>, <em class="sig-param">contract=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.io.Input" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pyungo.io.</code><code class="sig-name descname">Input</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">map</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">meta</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">contract</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.io.Input" title="Permalink to this definition">¶</a></dt>
 <dd><p>Object representing a function input</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -256,9 +257,9 @@ in the data inputs / outputs</p></li>
 </dl>
 </dd></dl>
 
-<dl class="class">
+<dl class="py class">
 <dt id="pyungo.io.Output">
-<em class="property">class </em><code class="sig-prename descclassname">pyungo.io.</code><code class="sig-name descname">Output</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">map=None</em>, <em class="sig-param">meta=None</em>, <em class="sig-param">contract=None</em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.io.Output" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pyungo.io.</code><code class="sig-name descname">Output</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">map</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">meta</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">contract</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pyungo.io.Output" title="Permalink to this definition">¶</a></dt>
 <dd><p>Object representing a function output</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -286,7 +287,7 @@ in the data inputs / outputs</p></li>
       &copy;2019, Cedric Leroy.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |

@@ -1,17 +1,18 @@
 
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>What’s New &#8212; pyungo v0.7.0 documentation</title>
     <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="prev" title="Developer Documentation" href="developer.html" />
@@ -55,7 +56,7 @@
 <li class="toctree-l1"><a class="reference internal" href="features.html">Features</a></li>
 <li class="toctree-l1"><a class="reference internal" href="developer.html">Developer Documentation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">What’s New</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#v0-9-0-tbd">v0.9.0 (TBD)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#v0-9-0-june-13-2020">v0.9.0 (June 13, 2020)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v0-8-1-october-27-2019">v0.8.1 (October 27, 2019)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v0-8-0-march-17-2019">v0.8.0 (March 17, 2019)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#v0-7-0-february-10-2019">v0.7.0 (February 10, 2019)</a></li>
@@ -84,7 +85,7 @@
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
 
 
 
@@ -104,8 +105,8 @@
   <div class="section" id="what-s-new">
 <h1>What’s New<a class="headerlink" href="#what-s-new" title="Permalink to this headline">¶</a></h1>
 <p>These are new features and improvements notes for each release.</p>
-<div class="section" id="v0-9-0-tbd">
-<h2>v0.9.0 (TBD)<a class="headerlink" href="#v0-9-0-tbd" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="v0-9-0-june-13-2020">
+<h2>v0.9.0 (June 13, 2020)<a class="headerlink" href="#v0-9-0-june-13-2020" title="Permalink to this headline">¶</a></h2>
 <ul>
 <li><p>Drop support / compatibility for Python 2.7.</p></li>
 <li><p>inputs / outputs names are now optional.:</p>
@@ -116,6 +117,9 @@
 </pre></div>
 </div>
 </li>
+<li><p>Additional argument to <code class="docutils literal notranslate"><span class="pre">Graph</span></code> to prevent inputs deepcopy (<a class="reference external" href="https://github.com/Tosa95">&#64;Tosa95</a>).
+This is useful when having large inputs when the <code class="docutils literal notranslate"><span class="pre">deepcopy</span></code> might be slow, but remove inputs
+immutability.</p></li>
 </ul>
 </div>
 <div class="section" id="v0-8-1-october-27-2019">
@@ -220,7 +224,7 @@ with an iterable was resulting in taking the first element.</p></li>
       &copy;2019, Cedric Leroy.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 2.2.1</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.0</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
